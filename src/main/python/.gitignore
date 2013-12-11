@@ -1,0 +1,16 @@
+*.pyc
+*.pyo
+*~
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# zaramining
+fr/blckshrk/zaramining/download/*
+*.db
+*.sqlite
