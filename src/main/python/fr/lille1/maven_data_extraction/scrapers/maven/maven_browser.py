@@ -7,49 +7,36 @@ Created on 24 oct. 2013
 from bs4 import BeautifulSoup
 from fr.lille1.maven_data_extraction.core.downloader import Downloader
 from fr.lille1.maven_data_extraction.scrapers.browser import Browser
+import urllib
 import logging as log
 import re
+import json
 
 class MavenBrowser(Browser):
 
     '''
     @param page: Just a string with html code
     '''
-    def __init__(self, page):
+    def __init__(self):
         self.downloader = Downloader()
-        self.soup = BeautifulSoup(page)
 
     '''
-    
+        Build an URL from an array of parameters
     '''
-    def goTo(self, url, timeRetrying = None):
+    def buildURL(self, url, parameters):
+        params = urllib.parse.urlencode(parameters, safe = '')
+
+        return url + '?' + params
+
+    '''
+        Return a python object wich represent the JSON string
+    '''
+    def getJSONContent(self, url, timeRetrying = None):
         try:
             page = self.downloader.getFile(url, timeRetrying)
         except:
             raise
         else:
-            self.soup = BeautifulSoup(page)
+            jsonObject = json.loads(page.decode("utf-8"))
 
-    '''
-    Menu section parsing
-    '''
-    def getMenu(self, bSubmenu = False):
-        if bSubmenu:
-            menu = self.soup.find(id = 'mainNavigationMenu').find('ul', attrs = {'class': 'bSubmenu'})
-        else:
-            menu = self.soup.find(id = 'mainNavigationMenu')
-
-        return menu
-
-    def getMenuEntries(self, bSubmenu = False):
-        menu = self.getMenu(bSubmenu)
-        entries = menu.find_all('a')
-
-        return entries
-
-    def getMenuLinkFromName(self, name):
-        menu = self.getMenu()
-        link = menu.find('a', text = re.compile(r'\s+' + name, re.I)).get('href')
-
-        return link
-
+        return jsonObject
