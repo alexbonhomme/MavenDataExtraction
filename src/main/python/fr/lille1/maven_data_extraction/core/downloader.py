@@ -7,6 +7,7 @@ Created on 24 oct. 2013
 from urllib.error import HTTPError
 from urllib.request import urlopen
 import logging as log
+import os
 import sys
 import time
 
@@ -39,6 +40,16 @@ class Downloader(object):
         return response.read()
 
     def writeFile(self, url, filename):
+        directory = os.path.dirname(filename)
+
+        # Create directory if not exists
+        if not os.path.exists(directory):
+            try:
+                os.makedirs(directory)
+            except OSError as e:
+                log.error('OSError error({0}): {1}'.format(e.errno, e.strerror))
+
+        # Write file on disk
         try:
             f = open(filename, 'wb')
             f.write(self.getFile(url))
