@@ -11,6 +11,7 @@ import errno
 import logging as log
 import os
 import re
+import sys
 
 class MavenScrape(Scraper):
 
@@ -78,7 +79,8 @@ class MavenScrape(Scraper):
                 self.downloader.writeFile(url, self.dl_folder + itemPath)
 
                 # Print a dot to display progressing
-                print('.')
+                sys.stdout.write('.')
+                sys.stdout.flush()
 
         return itemList
 
