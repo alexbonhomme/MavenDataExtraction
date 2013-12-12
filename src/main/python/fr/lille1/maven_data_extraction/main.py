@@ -6,8 +6,6 @@ Last edit on 11 dec. 2013
 from fr.lille1.maven_data_extraction.scrapers.maven.maven_scraper import \
     MavenScrape
 import logging as log
-import os
-import sys
 
 class Main(object):
 
@@ -16,18 +14,15 @@ class Main(object):
 
     '''
     Run scraping and .pom files
+    by default : scraped all the artefacts (from the root of the repository)
     '''
-    def run(self):
-        # We scraped all the artefacts (from the root of MCR)
-        # self.scraper.setConfig(47)
+    def run(self, directoryID = 47):
 
-        # Only the children of 'com' package
-        self.scraper.setConfig(3059406)
+        self.scraper.setConfig(directoryID)
 
-        # Go!
-        itemList = self.scraper.run();
-
-        log.info('-- Scraping DONE ! --')
+        print('-- Scraping START --')
+        self.scraper.run();
+        print('-- Scraping COMPLETE --')
 
 '''
 Main
@@ -35,11 +30,6 @@ Main
 if __name__ == '__main__':
     log.basicConfig(filename = 'maven_data_extraction.log', level = log.DEBUG)
 
-    '''
-    if len(sys.argv) < 2:
-        print('Usage: ' + sys.argv[0] + ' section subsection')
-    else:
-        Main('en', sys.argv[1], sys.argv[2]).run()
-    '''
-    Main().run()
+    # Start scraping on the 'com' package
+    Main().run(3059406)
 
