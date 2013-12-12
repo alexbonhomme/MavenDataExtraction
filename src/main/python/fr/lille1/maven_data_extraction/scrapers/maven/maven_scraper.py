@@ -77,6 +77,9 @@ class MavenScrape(Scraper):
                 url = self.PAGE_BASE + '/remotecontent?filepath=' + itemPath
                 self.downloader.writeFile(url, self.dl_folder + itemPath)
 
+                # Print a dot to display progressing
+                print('.')
+
         return itemList
 
     '''

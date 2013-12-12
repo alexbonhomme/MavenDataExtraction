@@ -3,13 +3,9 @@ Created on 24 oct. 2013
 
 @author: Alexandre Bonhomme
 '''
-
-from bs4 import BeautifulSoup
 from fr.lille1.maven_data_extraction.core.downloader import Downloader
 from fr.lille1.maven_data_extraction.scrapers.browser import Browser
 import urllib
-import logging as log
-import re
 import json
 
 class MavenBrowser(Browser):
