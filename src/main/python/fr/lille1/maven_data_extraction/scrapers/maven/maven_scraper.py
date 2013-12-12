@@ -11,7 +11,6 @@ import errno
 import logging as log
 import os
 import re
-import time
 
 class MavenScrape(Scraper):
 
@@ -48,44 +47,52 @@ class MavenScrape(Scraper):
 
         log.info('-- Ending scraping --')
 
-    def listAllDirectory(self, idDirectory):
-        # Get listing
-        urlSafe = self.browser.buildURL(self.PAGE_BASE + '/solrsearch/select',
-                                    {'q': 'id:"' + str(idDirectory) + '" OR parentId:"' + str(idDirectory) + '"',
-                                     'rows': '100000',
-                                     'core': 'filelisting',
-                                     'wt': 'json'})
-        log.debug(urlSafe)
-        jsonResponse = self.browser.getJSONContent(urlSafe)
-        listing = jsonResponse.get('response', {}).get('docs', {})
+    '''
+        List all sub-directories from the folder corresponding to the give ID
+    '''
+    def listAllDirectory(self, directoryID):
 
         # List link
         itemList = []
-        for item in listing:
+        for item in self.getDirectoryListing(directoryID):
 
             # type = 0 is a directory
             # type = 1 is a file
-            type = item.get('type', {})
+            itemType = item.get('type', {})
+            itemID = item.get('id', {})
+            itemName = item.get('name', {})
+            itemPath = item.get('path', {})
 
-            if type == 0 and item.get('id', {}) != idDirectory:
-                self.listAllDirectory(item.get('id', {}))
+            log.debug('Current Node :: ' + str(itemType) + ' : ' + \
+                      str(itemID) + '(' + str(type(itemID)) + ')' + ' : ' + \
+                      str(itemName) + ' : ' + str(itemPath))
 
-            name = item.get('name', {})
-            path = item.get('path', {})
-            if type == 1 and re.match('.*\.pom$', item.get('name', {})):
+            if itemType == 0 and itemID != directoryID:
+                log.debug('List child node :: ' + itemID)
+                self.listAllDirectory(itemID)
+
+            elif itemType == 1 and re.match('.*\.pom$', itemName):
                 # Downloading .pom
-                log.info('Downloading ' + name)
-                url = self.PAGE_BASE + '/remotecontent?filepath=' + path
-                self.downloader.writeFile(url, self.dl_folder + path)
-
-            '''DEBUG
-            itemList.append({
-                 'id': item.get('id', {}),
-                 'name': item.get('name', {}),
-                 'path': item.get('path', {})
-            })
-
-            log.info(itemList[-1]['id'] + ' : ' + itemList[-1]['name'] + ' : ' + itemList[-1]['path'])
-            '''
+                log.info('Downloading :: ' + itemName)
+                url = self.PAGE_BASE + '/remotecontent?filepath=' + itemPath
+                self.downloader.writeFile(url, self.dl_folder + itemPath)
 
         return itemList
+
+    '''
+     Get the listing of a directory from his id
+    '''
+    def getDirectoryListing(self, directoryID):
+        # Get listing
+        urlSafe = self.browser.buildURL(self.PAGE_BASE + '/solrsearch/select',
+                                    [('q', 'id:"' + str(directoryID) + '" OR parentId:"' + str(directoryID) + '"'),
+                                     ('rows', '100000'),
+                                     ('core', 'filelisting'),
+                                     ('wt', 'json')])
+        log.debug(urlSafe)
+
+        jsonResponse = self.browser.getJSONContent(urlSafe)
+        listing = jsonResponse.get('response', {}).get('docs', {})
+
+        return listing
+
