@@ -33,7 +33,7 @@ class Main(object):
 Main
 '''
 if __name__ == '__main__':
-    log.basicConfig(level = log.INFO)
+    log.basicConfig(filename = 'maven_data_extraction.log', level = log.DEBUG)
 
     '''
     if len(sys.argv) < 2:
