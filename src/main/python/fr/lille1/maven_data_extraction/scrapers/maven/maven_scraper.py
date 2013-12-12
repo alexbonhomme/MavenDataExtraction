@@ -64,12 +64,14 @@ class MavenScrape(Scraper):
             itemName = item.get('name', {})
             itemPath = item.get('path', {})
 
-            log.debug('Current Node :: ' + str(itemType) + ' : ' + \
-                      str(itemID) + '(' + str(type(itemID)) + ')' + ' : ' + \
-                      str(itemName) + ' : ' + str(itemPath))
+            log.debug('Current Node :: ' + \
+                      str(itemType) + ' : ' + \
+                      str(itemID) + ' : ' + \
+                      str(itemName) + ' : ' + \
+                      str(itemPath))
 
             if itemType == 0 and itemID != directoryID:
-                log.debug('List child node :: ' + itemID)
+                log.debug('List child node :: ID : ' + itemID + ', parent ID : ' + directoryID)
                 self.listAllDirectory(itemID)
 
             elif itemType == 1 and re.match('.*\.pom$', itemName):

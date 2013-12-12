@@ -16,7 +16,7 @@ class Main(object):
     Run scraping and .pom files
     by default : scraped all the artefacts (from the root of the repository)
     '''
-    def run(self, directoryID = 47):
+    def run(self, directoryID = '47'):
 
         self.scraper.setConfig(directoryID)
 
@@ -31,5 +31,5 @@ if __name__ == '__main__':
     log.basicConfig(filename = 'maven_data_extraction.log', level = log.DEBUG)
 
     # Start scraping on the 'com' package
-    Main().run(3059406)
+    Main().run('3059406')
 
