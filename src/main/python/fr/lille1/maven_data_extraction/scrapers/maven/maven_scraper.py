@@ -62,8 +62,6 @@ class MavenScrape(Scraper):
         currentPath = ''
         for item in self.getDirectoryListing(directoryID):
 
-            # type = 0 is a directory
-            # type = 1 is a file
             itemType = item.get('type', {})
             itemID = item.get('id', {})
             itemName = item.get('name', {})
@@ -75,13 +73,20 @@ class MavenScrape(Scraper):
                       str(itemName) + ' : ' + \
                       str(itemPath))
 
-            if itemType == 0 and itemID != directoryID:
+            if itemID == directoryID:
                 currentPath = itemPath
-                log.debug('List child node :: ID : ' + itemID + ', parent ID : ' + directoryID + ', path : ' + currentPath)
+                continue
+
+            # type = 0 is a directory
+            # type = 1 is a file
+            if itemType == 0:
+                log.debug('List child node :: ID : ' + itemID + \
+                          ', parent ID : ' + directoryID + \
+                          ', path : ' + currentPath)
                 self.listAllDirectory(itemID)
 
-            elif itemType == 1 and re.match('.*\.pom$', itemName):
-                # Downloading .pom
+            # Downloading .pom
+            elif re.match('.*\.pom$', itemName):
                 log.info('Downloading :: ' + itemName)
                 url = self.PAGE_BASE + '/remotecontent?filepath=' + itemPath
 
