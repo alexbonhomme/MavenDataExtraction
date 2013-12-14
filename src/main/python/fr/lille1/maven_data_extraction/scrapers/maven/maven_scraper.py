@@ -25,7 +25,7 @@ class MavenScrape(Scraper):
         Set the configuration of the scraper
         By default the ID of the root listing is 47 (yes, wtf number uh?)
     '''
-    def setConfig(self, rootID = 47):
+    def setConfig(self, rootID = '47'):
         self.rootID = rootID
 
     '''
@@ -53,8 +53,13 @@ class MavenScrape(Scraper):
     '''
     def listAllDirectory(self, directoryID):
 
-        # List link
-        itemList = []
+        '''
+        Actually, we store the current path, because sometime
+        the current dependency is from an other artifact so her path
+        couldn't be used to save the file.
+        So we filled the variable with the first element of response array.
+        '''
+        currentPath = ''
         for item in self.getDirectoryListing(directoryID):
 
             # type = 0 is a directory
@@ -71,20 +76,21 @@ class MavenScrape(Scraper):
                       str(itemPath))
 
             if itemType == 0 and itemID != directoryID:
-                log.debug('List child node :: ID : ' + itemID + ', parent ID : ' + directoryID)
+                currentPath = itemPath
+                log.debug('List child node :: ID : ' + itemID + ', parent ID : ' + directoryID + ', path : ' + currentPath)
                 self.listAllDirectory(itemID)
 
             elif itemType == 1 and re.match('.*\.pom$', itemName):
                 # Downloading .pom
                 log.info('Downloading :: ' + itemName)
                 url = self.PAGE_BASE + '/remotecontent?filepath=' + itemPath
-                self.downloader.writeFile(url, self.dl_folder + itemPath)
+
+                # /!\ with save the file in the current path, not in the original item path /!\
+                self.downloader.writeFile(url, self.dl_folder + currentPath + itemName)
 
                 # Print a dot to display progressing
                 sys.stdout.write('.')
                 sys.stdout.flush()
-
-        return itemList
 
     '''
      Get the listing of a directory from his id
