@@ -32,7 +32,6 @@ if __name__ == '__main__':
     log.basicConfig(filename = 'maven_data_extraction.log', level = log.DEBUG)
 
     if len(sys.argv) > 1:
-        print(sys.argv[1])
         Main(sys.argv[1]).run()
     else:
         Main().run()
