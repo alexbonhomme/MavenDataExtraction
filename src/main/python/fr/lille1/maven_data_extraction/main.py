@@ -10,11 +10,14 @@ from fr.lille1.maven_data_extraction.scrapers.maven.maven_scraper import \
 import logging as log
 import sys
 
+NODE_IGNORE = ['3059406', # com
+               '-509707146'] # org.apache
+
 class Main(object):
 
     def __init__(self, directoryID = '47'):
         self.scraper = MavenScrape()
-        self.scraper.setConfig(directoryID)
+        self.scraper.setConfig(directoryID, NODE_IGNORE)
 
     '''
     Run scraping and .pom files

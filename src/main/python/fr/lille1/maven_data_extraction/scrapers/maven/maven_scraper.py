@@ -25,8 +25,9 @@ class MavenScrape(Scraper):
         Set the configuration of the scraper
         By default the ID of the root listing is 47 (yes, wtf number uh?)
     '''
-    def setConfig(self, rootID = '47'):
+    def setConfig(self, rootID = '47', nodeIgnoreList = []):
         self.rootID = rootID
+        self.nodeIgnoreList = nodeIgnoreList
 
     '''
         Perform the scraping on Maven Central Repository website
@@ -52,6 +53,8 @@ class MavenScrape(Scraper):
         List all sub-directories from the folder corresponding to the give ID
     '''
     def listAllDirectory(self, directoryID):
+        if directoryID in self.nodeIgnoreList:
+            return
 
         '''
         Actually, we store the current path, because sometime
