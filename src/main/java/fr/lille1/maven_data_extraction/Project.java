@@ -2,13 +2,13 @@ package fr.lille1.maven_data_extraction;
 
 import java.io.File;
 
-public class Projet {
+public class Project {
 	private String groupId;
 	private String artifactId;
 	private String version;
 	private File pom;
 
-	public Projet(String groupId, String artifactId, String version, File pom){
+	public Project(String groupId, String artifactId, String version, File pom){
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;
