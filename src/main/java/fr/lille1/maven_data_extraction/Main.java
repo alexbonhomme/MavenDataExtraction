@@ -7,7 +7,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		Projet projet = new Projet("com.googlecode.jmockit", "guava", "", new File("~/workspace/IDL/MavenDataExtraction"));
+		Project projet = new Project("com.googlecode.jmockit", "guava", "", new File("~/workspace/IDL/MavenDataExtraction"));
 		File folder = new File("");
 		
 		DataExtraction dex = new DataExtraction(folder, projet);

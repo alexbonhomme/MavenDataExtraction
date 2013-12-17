@@ -16,9 +16,9 @@ import org.w3c.dom.NodeList;
 public class DataExtraction {
 
 	public File folder;
-	public Projet projet;
+	public Project projet;
 
-	public DataExtraction(File folder, Projet projet) {
+	public DataExtraction(File folder, Project projet) {
 		this.folder = folder;
 		this.projet = projet;
 	}
@@ -39,8 +39,8 @@ public class DataExtraction {
 	}
 
 	
-	public Projet getDependent(File file) throws XPathExpressionException{
-		Projet projet = null;
+	public Project getDependent(File file) throws XPathExpressionException{
+		Project projet = null;
 		boolean hasParent = false;
 		
 		XPathFactory factory = XPathFactory.newInstance();
