@@ -1,11 +1,14 @@
 package fr.lille1.maven_data_extraction.core;
 
 import java.util.List;
+import java.util.Set;
 
+import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
 /**
- * The {@link Graph graph} represent the dependencies of all Maven packages.
+ * This {@link Graph graph} represent the dependencies of all Maven Central
+ * packages.
  * 
  * @author Alexandre Bonhomme
  * 
@@ -13,7 +16,7 @@ import org.jgrapht.graph.DefaultEdge;
  *            Type of the edge to used in the graph. Could be
  *            {@link DefaultEdge} for example.
  */
-public interface MavenGraph<E> {
+public interface MavenMultigraph<E> {
 
 	/**
 	 * Add the {@link Project} <code>p</code> in the {@link Graph graph}
@@ -32,20 +35,42 @@ public interface MavenGraph<E> {
 	boolean removeVertex(Project p);
 
 	/**
+	 * Returns {@link true} if and only if this graph contains a {@link Project}
+	 * u such that <code>u.equals(p)</code>. If the specified {@link Project
+	 * project} is {@link null} returns {@link false}.
+	 */
+	boolean containsVertex(Project p);
+
+	/**
+	 * Return a {@link Project} object which have the same <code>groupId</code>
+	 * and <code>artifactId</code>, or {@link null} otherwise.
+	 */
+	Project getVertex(String groupId, String artifactId);
+
+	/**
 	 * Add an edge between the {@link Project} <code>source</code> and the
 	 * {@link Project} <code>target</code>
 	 * 
-	 * @return The created {@link E edge}
+	 * @return The created {@link E edge}, {@link null} otherwise.
 	 */
-	E addEdge(Project source, Project target);
+	E addEdge(Project source, Project target, String sourceVersion,
+			String targetVersion);
 
 	/**
-	 * Add the edge between the {@link Project} <code>source</code> and the
-	 * {@link Project} <code>target</code>
+	 * Remove the specified edge <code>e</code> from the {@link Graph graph}
+	 * 
+	 * @return {@link true} if and only if the graph contained the specified
+	 *         edge.
+	 */
+	boolean removeEdge(E e);
+
+	/**
+	 * Remove all the edges between the {@link Project} <code>source</code> and
+	 * the {@link Project} <code>target</code>
 	 * 
 	 * @return The remove {@link E edge} or {@link null}
 	 */
-	E removeEdge(Project source, Project target);
+	Set<E> removeAllEdges(Project source, Project target);
 
 	/**
 	 * List all dependencies of the {@link Project} <code>p</code>
