@@ -13,6 +13,8 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import fr.lille1.maven_data_extraction.core.Project;
+
 public class DataExtractionImpl implements DataExtraction {
 
 	public File folder;

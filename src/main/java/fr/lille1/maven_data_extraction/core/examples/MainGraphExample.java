@@ -2,8 +2,8 @@ package fr.lille1.maven_data_extraction.core.examples;
 
 import java.io.File;
 
-import fr.lille1.maven_data_extraction.Project;
 import fr.lille1.maven_data_extraction.core.DefaultMavenGraph;
+import fr.lille1.maven_data_extraction.core.Project;
 
 public class MainGraphExample {
 
@@ -20,11 +20,11 @@ public class MainGraphExample {
 		g.addVertex(p3);
 
 		// add edges to create linking structure
-		g.addEdge(p1, p2);
-		g.addEdge(p1, p3);
-		g.addEdge(p2, p3);
+		g.addEdge(p1, p2); // p1 -> p2
+		g.addEdge(p1, p3); // p1 -> p3
+		g.addEdge(p2, p3); // p2 -> p3
 
-		System.err.println(g);
+
 	}
 
 }

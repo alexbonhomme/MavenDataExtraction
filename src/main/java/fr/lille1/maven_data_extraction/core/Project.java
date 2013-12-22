@@ -1,4 +1,4 @@
-package fr.lille1.maven_data_extraction;
+package fr.lille1.maven_data_extraction.core;
 
 import java.io.File;
 

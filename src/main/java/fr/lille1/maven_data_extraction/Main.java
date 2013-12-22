@@ -3,6 +3,8 @@ package fr.lille1.maven_data_extraction;
 import java.io.File;
 import java.util.List;
 
+import fr.lille1.maven_data_extraction.core.Project;
+
 public class Main {
 
 	public static void main(String[] args) {

@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.jgrapht.graph.DefaultEdge;
 
-import fr.lille1.maven_data_extraction.Project;
-
 /**
  * The {@link Graph graph} represent the dependencies of all Maven packages.
  * 

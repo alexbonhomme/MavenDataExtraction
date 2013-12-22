@@ -7,8 +7,6 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
-import fr.lille1.maven_data_extraction.Project;
-
 /**
  * 
  * @author Alexandre Bonhomme

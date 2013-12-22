@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import fr.lille1.maven_data_extraction.core.Project;
+
 public interface DataExtraction {
 
 	/**

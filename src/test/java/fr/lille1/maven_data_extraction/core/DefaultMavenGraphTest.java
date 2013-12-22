@@ -10,8 +10,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.lille1.maven_data_extraction.Project;
-
 public class DefaultMavenGraphTest {
 
 	private MavenGraph<DefaultEdge> graph;
