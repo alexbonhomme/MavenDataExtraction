@@ -11,5 +11,10 @@
 			<artifactId>jgrapht-core</artifactId>
 			<version>0.9.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.gag</groupId>
+			<artifactId>gag</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 	</dependencies>
 </project>
