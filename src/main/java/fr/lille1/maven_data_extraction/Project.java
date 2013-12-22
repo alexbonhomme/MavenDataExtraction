@@ -3,11 +3,12 @@ package fr.lille1.maven_data_extraction;
 import java.io.File;
 
 public class Project {
-	private String groupId;
-	private String artifactId;
-	private String version;
-	private File pom;
+	private final String groupId;
+	private final String artifactId;
+	private final String version;
+	private final File pom;
 
+	
 	public Project(String groupId, String artifactId, String version, File pom){
 		this.groupId = groupId;
 		this.artifactId = artifactId;
@@ -19,38 +20,47 @@ public class Project {
 		return groupId;
 	}
 
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
-
 	public String getArtifactId() {
 		return artifactId;
 	}
 
-	public void setArtifactId(String artifactId) {
-		this.artifactId = artifactId;
-	}
-
 	public String getVersion() {
 		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
 	}
 	
 	public File getPom() {
 		return pom;
 	}
 
-	public void setPom(File pom) {
-		this.pom = pom;
+	@Override
+	public String toString() {
+		return groupId + ":" + artifactId + ":" + version + ":" + pom.getPath();
 	}
 
 	@Override
-	public String toString() {
-		return groupId + ":" + artifactId + ":" + version + ":" + pom;
+	public boolean equals(Object obj) {
+		Project project = (Project) obj;
+
+		if (project == null) {
+			return false;
+		}
+
+		if (!project.getArtifactId().equals(artifactId)) {
+			return false;
+		}
+
+		if (!project.getGroupId().equals(groupId)) {
+			return false;
+		}
+
+		if (!project.getPom().equals(pom)) {
+			return false;
+		}
+
+		if (!project.getVersion().equals(version)) {
+			return false;
+		}
+
+		return true;
 	}
-
-
 }
