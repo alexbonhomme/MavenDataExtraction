@@ -65,7 +65,7 @@ public class DefaultMavenGraph implements MavenGraph<DefaultEdge> {
 		List<Project> usages = new ArrayList<Project>();
 
 		for (DefaultEdge edge : graph.edgesOf(p)) {
-			Project source = graph.getEdgeTarget(edge);
+			Project source = graph.getEdgeSource(edge);
 			if (!source.equals(p)) {
 				usages.add(source);
 			}
