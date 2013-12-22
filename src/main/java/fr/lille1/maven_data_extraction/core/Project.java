@@ -1,19 +1,35 @@
 package fr.lille1.maven_data_extraction.core;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Project {
+
 	private final String groupId;
 	private final String artifactId;
-	private final String version;
-	private final File pom;
-
+	private final List<Version> versionsList;
 	
-	public Project(String groupId, String artifactId, String version, File pom){
+	/**
+	 * 
+	 * @param groupId
+	 * @param artifactId
+	 */
+	public Project(String groupId, String artifactId) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
-		this.version = version;
-		this.pom = pom;
+		this.versionsList = new ArrayList<Version>();
+	}
+
+	/**
+	 * 
+	 * @param groupId
+	 * @param artifactId
+	 * @param versionsList
+	 */
+	public Project(String groupId, String artifactId, List<Version> versionsList) {
+		this.groupId = groupId;
+		this.artifactId = artifactId;
+		this.versionsList = versionsList;
 	}
 
 	public String getGroupId() {
@@ -24,17 +40,21 @@ public class Project {
 		return artifactId;
 	}
 
-	public String getVersion() {
-		return version;
+	public boolean addVersion(Version v) {
+		return versionsList.add(v);
 	}
-	
-	public File getPom() {
-		return pom;
+
+	public boolean removeVersion(Version v) {
+		return versionsList.remove(v);
+	}
+
+	public List<Version> getVersionsList() {
+		return versionsList;
 	}
 
 	@Override
 	public String toString() {
-		return groupId + ":" + artifactId + ":" + version + ":" + pom.getPath();
+		return groupId + ":" + artifactId;
 	}
 
 	@Override
@@ -53,12 +73,15 @@ public class Project {
 			return false;
 		}
 
-		if (!project.getPom().equals(pom)) {
+		List<Version> versionsListToCompare = project.getVersionsList();
+		if (versionsListToCompare.size() != versionsList.size()) {
 			return false;
 		}
 
-		if (!project.getVersion().equals(version)) {
-			return false;
+		for (int i = 0; i < versionsListToCompare.size(); i++) {
+			if (!versionsListToCompare.get(i).equals(versionsList.get(i))) {
+				return false;
+			}
 		}
 
 		return true;

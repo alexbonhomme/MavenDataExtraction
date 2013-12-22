@@ -14,19 +14,25 @@ public class DefaultMavenGraphTest {
 
 	private MavenGraph<DefaultEdge> graph;
 
+	private Project p1;
+	private Project p2;
+	private Project p3;
+
 	@Before
 	public void setUp() throws Exception {
 		graph = new DefaultMavenGraph();
-	}
 
-	@Test
-	public void testGetDependencies() {
-		Project p1 = new Project("org.apache.abdera", "abdera", "1.0",
-				new File(""));
-		Project p2 = new Project("org.apache.accumulo", "accumulo-project",
-				"1.5.0", new File(""));
-		Project p3 = new Project("org.apache.ace", "ace-pom",
-				"0.8.0-incubator", new File(""));
+		p1 = new Project("org.apache.abdera", "abdera");
+		p1.addVersion(new Version("1.0", new File("")));
+		p1.addVersion(new Version("1.1.1", new File("")));
+
+		p2 = new Project("org.apache.accumulo", "accumulo-core");
+		p1.addVersion(new Version("1.3.6", new File("")));
+
+		p3 = new Project("org.apache.ace", "ace-pom");
+		p1.addVersion(new Version("0.8.0-incubator", new File("")));
+		p1.addVersion(new Version("0.8.1-incubator", new File("")));
+
 
 		// add the vertices
 		graph.addVertex(p1);
@@ -37,10 +43,10 @@ public class DefaultMavenGraphTest {
 		graph.addEdge(p1, p2); // p1 -> p2
 		graph.addEdge(p1, p3); // p1 -> p3
 		graph.addEdge(p2, p3); // p2 -> p3
+	}
 
-		/*
-		 * Test
-		 */
+	@Test
+	public void testGetDependencies() {
 		List<Project> dependencies = graph.getDependencies(p1);
 		assertEquals(2, dependencies.size());
 		assertTrue(dependencies.contains(p2));
@@ -49,26 +55,6 @@ public class DefaultMavenGraphTest {
 
 	@Test
 	public void testGetUsages() {
-		Project p1 = new Project("org.apache.abdera", "abdera", "1.0",
-				new File(""));
-		Project p2 = new Project("org.apache.accumulo", "accumulo-project",
-				"1.5.0", new File(""));
-		Project p3 = new Project("org.apache.ace", "ace-pom",
-				"0.8.0-incubator", new File(""));
-
-		// add the vertices
-		graph.addVertex(p1);
-		graph.addVertex(p2);
-		graph.addVertex(p3);
-
-		// add edges to create linking structure
-		graph.addEdge(p1, p2); // p1 -> p2
-		graph.addEdge(p1, p3); // p1 -> p3
-		graph.addEdge(p2, p3); // p2 -> p3
-
-		/*
-		 * Test
-		 */
 		List<Project> usages = graph.getUsages(p3);
 		assertEquals(2, usages.size());
 		assertTrue(usages.contains(p1));
