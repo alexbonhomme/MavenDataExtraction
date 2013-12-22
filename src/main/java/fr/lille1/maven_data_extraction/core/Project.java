@@ -3,6 +3,8 @@ package fr.lille1.maven_data_extraction.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gag.annotation.remark.Hack;
+
 public class Project {
 
 	private final String groupId;
@@ -57,6 +59,7 @@ public class Project {
 		return groupId + ":" + artifactId;
 	}
 
+	@Hack(value = "do not compare the versionsList")
 	@Override
 	public boolean equals(Object obj) {
 		Project project = (Project) obj;
@@ -71,17 +74,6 @@ public class Project {
 
 		if (!project.getGroupId().equals(groupId)) {
 			return false;
-		}
-
-		List<Version> versionsListToCompare = project.getVersionsList();
-		if (versionsListToCompare.size() != versionsList.size()) {
-			return false;
-		}
-
-		for (int i = 0; i < versionsListToCompare.size(); i++) {
-			if (!versionsListToCompare.get(i).equals(versionsList.get(i))) {
-				return false;
-			}
 		}
 
 		return true;
