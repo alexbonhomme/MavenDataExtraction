@@ -50,6 +50,40 @@ class MavenScrape(Scraper):
         log.info('-- Ending scraping --')
 
     '''
+        Perform the scraping on Maven Central Repository website from the given ID
+    '''
+    def runFrom(self, startID):
+        self.dl_folder = self.DL_FOLDER_PATH_BASE + '/'
+
+        # Create folder if is not existing
+        try:
+            os.makedirs(self.dl_folder)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise
+
+        log.info('-- Starting scraping --')
+
+        ''' 
+        List all "root nodes" to find the start point
+        '''
+        started = False
+        for item in self.getDirectoryListing(self.rootID):
+
+            itemID = item.get('id', {})
+
+            if not started:
+                if itemID != startID:
+                    continue
+                else:
+                    started = True
+
+            # Scrap!
+            self.listAllDirectory(itemID);
+
+        log.info('-- Ending scraping --')
+
+    '''
         List all sub-directories from the folder corresponding to the give ID
     '''
     def listAllDirectory(self, directoryID):
