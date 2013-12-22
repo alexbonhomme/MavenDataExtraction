@@ -1,4 +1,6 @@
-package fr.lille1.maven_data_extraction.core;
+package fr.lille1.maven_data_extraction.core.examples;
+
+import java.io.File;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -21,11 +23,12 @@ public class GraphExample {
 		DirectedGraph<Project, DefaultEdge> graph = new DefaultDirectedGraph<Project, DefaultEdge>(
 				DefaultEdge.class);
 
-		Project p1 = new Project("org.apache.abdera", "abdera", "1.0", null);
+		Project p1 = new Project("org.apache.abdera", "abdera", "1.0",
+				new File(""));
 		Project p2 = new Project("org.apache.accumulo", "accumulo-project",
-				"1.5.0", null);
+				"1.5.0", new File(""));
 		Project p3 = new Project("org.apache.ace", "ace-pom",
-				"0.8.0-incubator", null);
+				"0.8.0-incubator", new File(""));
 
 		// add the vertices
 		graph.addVertex(p1);

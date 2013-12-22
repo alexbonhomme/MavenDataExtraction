@@ -21,7 +21,7 @@ class Main(object):
 
     '''
     Run scraping and .pom files
-    by default : scraped all the artefacts (from the root of the repository 'central/')
+    by default : scraped all the artifacts (from the root of the repository 'central/')
     '''
     def run(self):
         print('-- Scraping START --')
