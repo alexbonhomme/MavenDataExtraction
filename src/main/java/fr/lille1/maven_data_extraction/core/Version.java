@@ -2,6 +2,12 @@ package fr.lille1.maven_data_extraction.core;
 
 import java.io.File;
 
+/**
+ * Implementation of a version for a {@link Project} object.
+ * 
+ * @author Alexandre Bonhomme
+ * 
+ */
 public class Version {
 
 	private final String versionNumber;

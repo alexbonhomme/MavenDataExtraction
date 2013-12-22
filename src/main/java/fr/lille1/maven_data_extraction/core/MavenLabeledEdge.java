@@ -2,12 +2,24 @@ package fr.lille1.maven_data_extraction.core;
 
 import java.util.AbstractMap.SimpleEntry;
 
+/**
+ * Specification of {@link LabeledEdge}, this class uses {@link SimpleEntry
+ * <String, String>} as label.
+ * 
+ * @author Alexandre Bonhomme
+ * 
+ */
 public class MavenLabeledEdge extends LabeledEdge<SimpleEntry<String, String>> {
 
 	private static final long serialVersionUID = -2541337682928682169L;
 
+	/**
+	 * 
+	 * @param sourceVersion
+	 * @param targetVersion
+	 */
 	public MavenLabeledEdge(String sourceVersion, String targetVersion) {
-		super(new SimpleEntry<>(sourceVersion, targetVersion));
+		super(new SimpleEntry<String, String>(sourceVersion, targetVersion));
 	}
 
 	/**

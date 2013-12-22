@@ -11,6 +11,7 @@ import org.jgrapht.graph.DirectedMultigraph;
 import com.google.gag.annotation.remark.OhNoYouDidnt;
 
 /**
+ * Implementation of a {@link MavenMultigraph} with {@link MavenLabeledEdge}.
  * 
  * @author Alexandre Bonhomme
  * 
