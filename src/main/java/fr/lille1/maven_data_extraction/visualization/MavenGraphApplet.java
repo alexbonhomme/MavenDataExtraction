@@ -1,7 +1,5 @@
 package fr.lille1.maven_data_extraction.visualization;
 
-import java.awt.Dimension;
-
 import javax.swing.JApplet;
 
 import org.jgrapht.ext.JGraphXAdapter;
@@ -21,7 +19,6 @@ import fr.lille1.maven_data_extraction.core.Project;
 public class MavenGraphApplet extends JApplet {
 
 	private static final long serialVersionUID = -5809860607499098885L;
-	private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
 
 	private JGraphXAdapter<Project, MavenLabeledEdge> adapter;
 	private final MavenMultigraph<MavenLabeledEdge> graph;
@@ -40,7 +37,6 @@ public class MavenGraphApplet extends JApplet {
 				graph.getListenableGraph());
 
 		getContentPane().add(new mxGraphComponent(adapter));
-		resize(DEFAULT_SIZE);
 
 		// positioning via jgraphx layouts
 		mxCircleLayout layout = new mxCircleLayout(adapter);
