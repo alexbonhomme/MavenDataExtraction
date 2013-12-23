@@ -13,6 +13,11 @@ import time
 
 class Downloader(object):
 
+    '''
+    Return the content of the given url.
+    If an error occur and the timeRetrying is not None
+    this value is used to determined the time before the next trying
+    '''
     def getFile(self, url, timeRetrying = None):
         if url is None:
             log.warning('Empty URL')
@@ -39,6 +44,9 @@ class Downloader(object):
 
         return response.read()
 
+    '''
+    Write the content of the given URL in the specified file
+    '''
     def writeFile(self, url, filename):
         directory = os.path.dirname(filename)
 

@@ -25,7 +25,7 @@ class MavenBrowser(Browser):
         return url + '?' + params
 
     '''
-        Return a python object wich represent the JSON string
+        Return a Python object which represent the JSON string
     '''
     def getJSONContent(self, url, timeRetrying = None):
         try:
