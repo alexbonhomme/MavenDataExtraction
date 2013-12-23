@@ -54,12 +54,6 @@ public class MavenMultigraphLabeledTest {
 	}
 
 	@Test
-	public void testContainsVertex() {
-		Project p = new Project("org.apache.ace", "ace-pom");
-		assertTrue(p3.equals(p));
-	}
-
-	@Test
 	public void testGetVertex() {
 		Project project = graph.getVertex("org.apache.abdera", "abdera");
 		assertEquals(p1, project);
