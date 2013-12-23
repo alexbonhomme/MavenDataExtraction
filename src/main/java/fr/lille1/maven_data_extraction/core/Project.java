@@ -1,7 +1,8 @@
 package fr.lille1.maven_data_extraction.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.google.gag.annotation.remark.Hack;
 
@@ -9,7 +10,7 @@ public class Project {
 
 	private final String groupId;
 	private final String artifactId;
-	private final List<Version> versionsList;
+	private final Map<String, Version> versionsMap;
 	
 	/**
 	 * 
@@ -19,7 +20,7 @@ public class Project {
 	public Project(String groupId, String artifactId) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
-		this.versionsList = new ArrayList<Version>();
+		this.versionsMap = new HashMap<String, Version>();
 	}
 
 	/**
@@ -28,10 +29,11 @@ public class Project {
 	 * @param artifactId
 	 * @param versionsList
 	 */
-	public Project(String groupId, String artifactId, List<Version> versionsList) {
+	public Project(String groupId, String artifactId,
+			Map<String, Version> versionsList) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
-		this.versionsList = versionsList;
+		this.versionsMap = versionsList;
 	}
 
 	public String getGroupId() {
@@ -42,16 +44,48 @@ public class Project {
 		return artifactId;
 	}
 
-	public boolean addVersion(Version v) {
-		return versionsList.add(v);
+	/**
+	 * Add a {@link Version} to the {@link Project}. If a {@link Version
+	 * version} with the same version number exists that replace the all value.
+	 * 
+	 * @return The previous {@link Version} associate with the given version
+	 *         number or {@link null} if the version does not already exists.
+	 */
+	public Version addVersion(Version v) {
+		return versionsMap.put(v.getVersionNumber(), v);
 	}
 
-	public boolean removeVersion(Version v) {
-		return versionsList.remove(v);
+	/**
+	 * Remove the version with the given <code>versionNumber</code>.
+	 * 
+	 * @return The version associate to the <code>versionNumber</code>, or
+	 *         {@link null} if no {@link Version} are found
+	 */
+	public Version removeVersion(String versionNumber) {
+		return versionsMap.remove(versionNumber);
 	}
 
-	public List<Version> getVersionsList() {
-		return versionsList;
+	/**
+	 * Return the {@link Version} object associate to the given
+	 * <code>versionNumber</code>, or {@link null} if no {@link Version} could
+	 * be found.
+	 */
+	public Version getVersion(String versionNumber) {
+		return versionsMap.get(versionNumber);
+	}
+
+	/**
+	 * Return an {@link Iterator} over the {@link Version} set.
+	 */
+	public Iterator<Version> getVersionsIterator() {
+		return versionsMap.values().iterator();
+	}
+
+	/**
+	 * Return the size of the {@link Version} set.
+	 */
+	public int getVersionsSize() {
+		return versionsMap.size();
 	}
 
 	@Override
