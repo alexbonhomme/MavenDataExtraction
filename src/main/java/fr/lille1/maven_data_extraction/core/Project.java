@@ -90,7 +90,7 @@ public class Project {
 
 	@Override
 	public String toString() {
-		return groupId + ":" + artifactId;
+		return groupId + "." + artifactId;
 	}
 
 	@Hack(value = "do not compare the versionsList")

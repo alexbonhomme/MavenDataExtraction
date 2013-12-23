@@ -38,7 +38,7 @@ public class MavenLabeledEdge extends LabeledEdge<SimpleEntry<String, String>> {
 
 	@Override
 	public String toString() {
-		return "(" + getSourceVersion() + ", " + getTargetVersion() + ")";
+		return "(" + getSourceVersion() + " -> " + getTargetVersion() + ")";
 	}
 
 }
