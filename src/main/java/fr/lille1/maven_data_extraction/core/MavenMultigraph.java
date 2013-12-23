@@ -7,8 +7,14 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
 /**
- * This {@link Graph graph} represent the dependencies of all Maven Central
- * packages.
+ * This {@link Graph graph} represent the projects and their dependencies from
+ * the Maven Central repository.
+ * 
+ * Should be construct with the {@link MavenMultigraphFactory} for example :
+ * 
+ * MavenMultigraph<MavenLabeledEdge> g = new
+ * MavenMultigraphFactory<MavenMultigraph
+ * >(MavenMultigraphLabeled.class).build();
  * 
  * @author Alexandre Bonhomme
  * 

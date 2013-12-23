@@ -16,6 +16,14 @@ public class MavenMultigraphFactory<G> {
 
 	private static final int INIT_MAP_SIZE = 500000;
 
+	private final Class<? extends G> graphClass;
+
+	/**
+	 * @param graphClass
+	 */
+	public MavenMultigraphFactory(Class<? extends G> graphClass) {
+		this.graphClass = graphClass;
+	}
 
 	@AhaMoment(Where.TOILET)
 	/*-
@@ -32,7 +40,7 @@ public class MavenMultigraphFactory<G> {
 	 *   get all Project dependencies from Map.
 	 *   add Edge between Projects.
 	 */
-	public G build(Class<? extends G> graphClass) {
+	public G build() {
 		Map<String, Project> mapOfProjects = new HashMap<String, Project>(
 				INIT_MAP_SIZE);
 
@@ -41,14 +49,14 @@ public class MavenMultigraphFactory<G> {
 		// mapOfProjects.put(groupId + artifactId, new Project(groupId,
 		// artifactId, ...);
 
-		G graph = createGraph(graphClass);
+		G graph = createGraph();
 
 		// TODO Implement vertex adding and edge connecting
 
 		return graph;
 	}
 
-	private G createGraph(Class<? extends G> graphClass) {
+	private G createGraph() {
 		try {
 			return graphClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {

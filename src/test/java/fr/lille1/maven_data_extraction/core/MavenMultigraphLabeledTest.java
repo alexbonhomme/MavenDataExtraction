@@ -43,14 +43,14 @@ public class MavenMultigraphLabeledTest {
 		graph.addVertex(p3);
 
 		// p1.v1 -> p2.v1
-		graph.addEdge(p1, p2, p1.getVersionsList().get(0).getVersionNumber(),
-				p2.getVersionsList().get(0).getVersionNumber());
+		graph.addEdge(p1, p2, p1.getVersion("1.0").getVersionNumber(), p2
+				.getVersion("1.3.6").getVersionNumber());
 		// p1.v1 -> p3.v1
-		graph.addEdge(p1, p3, p1.getVersionsList().get(0).getVersionNumber(),
-				p3.getVersionsList().get(0).getVersionNumber());
+		graph.addEdge(p1, p3, p1.getVersion("1.0").getVersionNumber(), p3
+				.getVersion("0.8.0-incubator").getVersionNumber());
 		// p2.v1 -> p3.v2
-		graph.addEdge(p2, p3, p2.getVersionsList().get(0).getVersionNumber(),
-				p3.getVersionsList().get(1).getVersionNumber());
+		graph.addEdge(p2, p3, p2.getVersion("1.3.6").getVersionNumber(), p3
+				.getVersion("0.8.1-incubator").getVersionNumber());
 	}
 
 	@Test
