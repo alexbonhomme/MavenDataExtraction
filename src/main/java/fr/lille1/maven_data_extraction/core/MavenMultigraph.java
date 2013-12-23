@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;
+import org.jgrapht.ListenableGraph;
 import org.jgrapht.graph.DefaultEdge;
 
 /**
@@ -88,4 +89,10 @@ public interface MavenMultigraph<E> {
 	 * <code>p</code> in their dependencies
 	 */
 	List<Project> getUsages(Project p);
+
+	/**
+	 * Return an instance of {@link ListenableGraph} built from the internal
+	 * Maven {@link Graph}
+	 */
+	ListenableGraph<Project, MavenLabeledEdge> getListenableGraph();
 }

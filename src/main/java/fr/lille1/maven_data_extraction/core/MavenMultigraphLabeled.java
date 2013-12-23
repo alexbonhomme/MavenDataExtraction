@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;
+import org.jgrapht.ListenableGraph;
+import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DirectedMultigraph;
 
+import com.google.gag.annotation.disclaimer.AhaMoment;
 import com.google.gag.annotation.remark.OhNoYouDidnt;
+import com.google.gag.enumeration.Where;
 
 /**
  * Implementation of a {@link MavenMultigraph} with {@link MavenLabeledEdge}.
@@ -26,6 +30,11 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	 */
 	public MavenMultigraphLabeled() {
 		this.graph = new DirectedMultigraph<Project, MavenLabeledEdge>(MavenLabeledEdge.class);
+	}
+
+	@AhaMoment(Where.TRAFFIC_JAM)
+	public ListenableGraph<Project, MavenLabeledEdge> getListenableGraph() {
+		return new DefaultListenableGraph<Project, MavenLabeledEdge>(this.graph);
 	}
 
 	@Override
