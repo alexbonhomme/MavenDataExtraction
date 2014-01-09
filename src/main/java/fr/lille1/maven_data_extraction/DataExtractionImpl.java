@@ -3,6 +3,7 @@ package fr.lille1.maven_data_extraction;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.xpath.XPath;
@@ -25,20 +26,11 @@ import fr.lille1.maven_data_extraction.core.Version;
 public class DataExtractionImpl implements DataExtraction {
 
 	public File folder;
-	public Project project;
-	public Version version;
-	
-	public DataExtractionImpl(Project project, Version version, File folder){
-		this.folder = folder;
-		this.project = project;
-		this.version = version;
-	}
+	public HashMap<String, Project> projectMap;
 
-	public DataExtractionImpl(File pom, File folder) throws JDOMException, IOException {
+	public DataExtractionImpl(File folder) {
 		this.folder = folder;
-		this.project = getProject(pom);
-		this.version = getVersion(pom);
-		project.addVersion(version);
+		this.projectMap = new HashMap<String, Project>();
 	}
 
 	private Project getProject(File pom){
@@ -106,62 +98,26 @@ public class DataExtractionImpl implements DataExtraction {
 		return listFile;
 	}
 	
-	public Version getDependent(File xmlFile) {
+	public void addProject(File pom){
+		Project project = getProject(pom);
+		Version version = getVersion(pom);
+		String keyProject = project.getGroupId() + "." + project.getArtifactId();
 		
-		SAXBuilder builder = new SAXBuilder();
-
-		try {
-			
-			Document document = (Document) builder.build(xmlFile);
-			Element rootNode = document.getRootElement();
-			Namespace ns = rootNode.getNamespace();
-			Element dependenciesNode = rootNode.getChild("dependencies", ns);
-			
-			if (dependenciesNode == null){
-				return null;
-			}
-			
-			List<Element> listDependency = dependenciesNode.getChildren();
-			
-			for (Element dependencyNode : listDependency){
-				if (!dependencyNode.getChildText("groupId", ns).equals(project.getGroupId())) {
-					continue;
-				}
-				if (!dependencyNode.getChildText("artifactId", ns).equals(project.getArtifactId())) {
-					continue;
-				}
-				if (!dependencyNode.getChildText("version", ns).equals(version.getVersionNumber())) {
-					continue;
-				}
-
-				Version v = new Version(rootNode.getChildText("version", ns), xmlFile);
-				//Project p = new Project(rootNode.getChildText("groupId", ns), rootNode.getChildText("ArtifactId", ns), ...)
-				return v;
-			}
-			
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (projectMap.containsKey(keyProject)){
+			project = projectMap.get(keyProject);
+			project.addVersion(version);
+		} else {
+			project.addVersion(version);
+			projectMap.put(keyProject, project);
 		}
-		
-		return null;
 	}
 	
-	public List<Version> getAllDependent() {
-		List<Version> res = new ArrayList<Version>();
+	public HashMap<String, Project> getAllProject() {
 		List<File> listPom = findPom(folder);
 
 		for (File pom : listPom) {
-			Version v = getDependent(pom);
-			if (v == null) {
-				continue;
-			}
-			res.add(v);
-			System.out.println(v.getPomFile());
+			addProject(pom);
 		}
-		return res;
+		return projectMap;
 	}
 }

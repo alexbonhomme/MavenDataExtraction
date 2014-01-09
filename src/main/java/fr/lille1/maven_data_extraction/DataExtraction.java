@@ -1,6 +1,7 @@
 package fr.lille1.maven_data_extraction;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -21,8 +22,9 @@ public interface DataExtraction {
 	 * @return
 	 * @throws XPathExpressionException
 	 */
-	Version getDependent(File file);
 	
-	List<Version> getAllDependent();
+	HashMap<String, Project> getAllProject();
 
+	
+	void addProject(File pom);
 }
