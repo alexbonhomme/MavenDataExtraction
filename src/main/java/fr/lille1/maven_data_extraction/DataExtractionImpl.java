@@ -98,7 +98,7 @@ public class DataExtractionImpl implements DataExtraction {
 		return listFile;
 	}
 	
-	public void addProject(File pom){
+	private void addProject(File pom){
 		Project project = getProject(pom);
 		Version version = getVersion(pom);
 		String keyProject = project.getGroupId() + "." + project.getArtifactId();

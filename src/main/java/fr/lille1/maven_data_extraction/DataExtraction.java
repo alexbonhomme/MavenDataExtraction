@@ -9,6 +9,10 @@ import javax.xml.xpath.XPathExpressionException;
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
 
+/**
+ * @author Clement Dufour
+ *
+ */
 public interface DataExtraction {
 
 	/**
@@ -17,14 +21,10 @@ public interface DataExtraction {
 	 */
 	List<File> findPom(File folder);
 
-	/**
-	 * @param file
-	 * @return
-	 * @throws XPathExpressionException
-	 */
 	
+	/**
+	 * @return HashMap of all project contains in DataExtractionParam
+	 */
 	HashMap<String, Project> getAllProject();
 
-	
-	void addProject(File pom);
 }
