@@ -103,6 +103,11 @@ public class DataExtractionImpl implements DataExtraction {
 		Version version = getVersion(pom);
 		String keyProject = project.getGroupId() + "." + project.getArtifactId();
 		
+		if (version == null) {
+			System.out.println("this pom have no version number : " + pom);
+			return;
+		}
+		
 		if (projectMap.containsKey(keyProject)){
 			project = projectMap.get(keyProject);
 			project.addVersion(version);
