@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
 
 import fr.lille1.maven_data_extraction.core.Project;
+import fr.lille1.maven_data_extraction.core.Version;
 
 public interface DataExtraction {
 
@@ -20,6 +21,8 @@ public interface DataExtraction {
 	 * @return
 	 * @throws XPathExpressionException
 	 */
-	Project getDependent(File file)	throws XPathExpressionException;
+	Version getDependent(File file);
+	
+	List<Version> getAllDependent();
 
 }

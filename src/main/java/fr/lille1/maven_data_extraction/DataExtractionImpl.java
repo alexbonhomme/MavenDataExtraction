@@ -14,6 +14,7 @@ import javax.xml.xpath.XPathFactory;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -35,12 +36,9 @@ public class DataExtractionImpl implements DataExtraction {
 
 	public DataExtractionImpl(File pom, File folder) throws JDOMException, IOException {
 		this.folder = folder;
-		project = getProject(pom);
-		version = getVersion(pom);
-		
-		System.out.println(project.getGroupId());
-		System.out.println(project.getArtifactId());
-		System.out.println(version.getVersionNumber());
+		this.project = getProject(pom);
+		this.version = getVersion(pom);
+		project.addVersion(version);
 	}
 
 	private Project getProject(File pom){
@@ -107,13 +105,63 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 		return listFile;
 	}
-
-	public Project getDependent(File xmlFile) throws XPathExpressionException{
+	
+	public Version getDependent(File xmlFile) {
 		
+		SAXBuilder builder = new SAXBuilder();
 
+		try {
+			
+			Document document = (Document) builder.build(xmlFile);
+			Element rootNode = document.getRootElement();
+			Namespace ns = rootNode.getNamespace();
+			Element dependenciesNode = rootNode.getChild("dependencies", ns);
+			
+			if (dependenciesNode == null){
+				return null;
+			}
+			
+			List<Element> listDependency = dependenciesNode.getChildren();
+			
+			for (Element dependencyNode : listDependency){
+				if (!dependencyNode.getChildText("groupId", ns).equals(project.getGroupId())) {
+					continue;
+				}
+				if (!dependencyNode.getChildText("artifactId", ns).equals(project.getArtifactId())) {
+					continue;
+				}
+				if (!dependencyNode.getChildText("version", ns).equals(version.getVersionNumber())) {
+					continue;
+				}
 
-		
+				Version v = new Version(rootNode.getChildText("version", ns), xmlFile);
+				//Project p = new Project(rootNode.getChildText("groupId", ns), rootNode.getChildText("ArtifactId", ns), ...)
+				return v;
+			}
+			
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return null;
+	}
+	
+	public List<Version> getAllDependent() {
+		List<Version> res = new ArrayList<Version>();
+		List<File> listPom = findPom(folder);
+
+		for (File pom : listPom) {
+			Version v = getDependent(pom);
+			if (v == null) {
+				continue;
+			}
+			res.add(v);
+			System.out.println(v.getPomFile());
+		}
+		return res;
 	}
 }
