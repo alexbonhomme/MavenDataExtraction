@@ -25,8 +25,8 @@ import fr.lille1.maven_data_extraction.core.Version;
 
 public class DataExtractionImpl implements DataExtraction {
 
-	public File folder;
-	public HashMap<String, Project> projectMap;
+	private File folder;
+	private HashMap<String, Project> projectMap;
 
 	public DataExtractionImpl(File folder) {
 		this.folder = folder;
