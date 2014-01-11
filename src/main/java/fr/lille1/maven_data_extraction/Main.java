@@ -16,7 +16,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		File pom = new File("/home/klem/Documents/maven_central/download/asia/ivity/android/drag-sort-listview/1.0/drag-sort-listview-1.0.pom");
-		File pom2 = new File("/home/klem/Documents/maven_central/download/");
+		File pom2 = new File("/home/klem/Documents/maven_central/download/asia");
 		
 		
 		DataExtraction dex = new DataExtractionImpl(pom2);

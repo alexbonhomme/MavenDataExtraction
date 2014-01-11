@@ -33,57 +33,6 @@ public class DataExtractionImpl implements DataExtraction {
 		this.projectMap = new HashMap<String, Project>();
 	}
 
-	private Project getProject(File pom){
-		String groupId;
-		String artifactId;
-		SAXBuilder builder = new SAXBuilder();
-
-		try {
-			Document document = (Document) builder.build(pom);
-			Element rootNode = document.getRootElement();			
-			
-			groupId = rootNode.getChildText("groupId", rootNode.getNamespace());
-			artifactId = rootNode.getChildText("artifactId", rootNode.getNamespace());
-			
-			if (groupId != null && artifactId != null){
-				return new Project(groupId, artifactId);
-			}
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-	
-	private Version getVersion(File pom) {
-		String versionNumber;
-		SAXBuilder builder = new SAXBuilder();
-
-		try {
-			Document document = (Document) builder.build(pom);
-			Element rootNode = document.getRootElement();
-			
-			versionNumber = rootNode.getChildText("version", rootNode.getNamespace());
-			
-			if (versionNumber != null){
-				return new Version(versionNumber, pom);
-			}
-			
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	public List<File> findPom(File folder) {
 		List<File> listFile = new ArrayList<File>();
 
@@ -99,8 +48,9 @@ public class DataExtractionImpl implements DataExtraction {
 	}
 	
 	private void addProject(File pom){
-		Project project = getProject(pom);
-		Version version = getVersion(pom);
+		PomExtraction pomExtraction = new PomExtraction(pom);
+		Project project = pomExtraction.getProject();
+		Version version = pomExtraction.getVersion();
 		String keyProject = project.getGroupId() + "." + project.getArtifactId();
 		
 		if (version == null) {
@@ -124,11 +74,5 @@ public class DataExtractionImpl implements DataExtraction {
 			addProject(pom);
 		}
 		return projectMap;
-	}
-
-	public HashMap<String, Project> getProjectMap() {
-		return projectMap;
-	}
-	
-	
+	}	
 }
