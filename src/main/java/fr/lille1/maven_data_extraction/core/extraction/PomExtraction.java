@@ -21,25 +21,46 @@ public class PomExtraction {
 	private String artifactId;
 	private String versionNumber;
 	private List<Project> dependents;
-	
+
 	public PomExtraction(File pom) {
 		this.pom = pom;
+		this.dependents = new ArrayList<Project>();
 		extractData();
 	}
-	
+
 	private void extractData() {
 		SAXBuilder builder = new SAXBuilder();
 		try {
 			Document document = (Document) builder.build(pom);
-			Element rootNode = document.getRootElement();	
+			Element rootNode = document.getRootElement();
 			Namespace ns = rootNode.getNamespace();
 			Element dependenciesNode = rootNode.getChild("dependencies", ns);
-			
-			
+
 			groupId = rootNode.getChildText("groupId", ns);
 			artifactId = rootNode.getChildText("artifactId", ns);
 			versionNumber = rootNode.getChildText("version", ns);
-			
+
+			if (dependenciesNode == null){
+				return;
+			}
+			List<Element> listDependency = dependenciesNode.getChildren("dependency", ns);
+			String groupIdDep;
+			String artifactIdDep;
+			String versionNumberDep;
+
+			for (Element dependencyNode : listDependency) {
+				groupIdDep = dependencyNode.getChildText("groupId", ns);
+				artifactIdDep = dependencyNode.getChildText("artifactId", ns);
+				versionNumberDep = dependencyNode.getChildText("version", ns);
+
+				Project project = new Project(groupIdDep, artifactIdDep);
+				Version version = new Version(versionNumberDep, null);
+
+				if (version != null) {
+					project.addVersion(version);
+					dependents.add(project);
+				}
+			}
 
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
@@ -50,17 +71,17 @@ public class PomExtraction {
 		}
 
 	}
-	
-	public Project getProject(){
-		if (groupId != null && artifactId != null){
+
+	public Project getProject() {
+		if (groupId != null && artifactId != null) {
 			return new Project(groupId, artifactId);
 		}
 		return null;
 	}
-	
-	public Version getVersion(){
-		if (versionNumber != null){
-			return new Version(versionNumber, pom);
+
+	public Version getVersion() {
+		if (versionNumber != null) {
+			return new Version(versionNumber, pom, dependents);
 		}
 		return null;
 	}
@@ -80,8 +101,5 @@ public class PomExtraction {
 	public List<Project> getDependents() {
 		return dependents;
 	}
-	
-	
-	
-	
+
 }

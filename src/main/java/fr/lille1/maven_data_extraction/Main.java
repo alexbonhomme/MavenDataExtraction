@@ -24,13 +24,18 @@ public class Main {
 		
 		for (Map.Entry<String, Project> res : map.entrySet()) {
 			
-			System.out.println("==Project== " + res.getKey());
+			System.out.println("====Project==== " + res.getKey());
 			
 			Iterator iterator = res.getValue().getVersionsIterator();
 			
 			while(iterator.hasNext()) {
 				Version resVersion =  (Version) iterator.next();
-				System.out.println("=Version= " + resVersion.getVersionNumber());
+				System.out.println("===Version=== " + resVersion.getVersionNumber());
+				
+				for (Project projectDep : resVersion.getDependents()){
+					System.out.println("==projectDep==" + projectDep.getGroupId() + "." + projectDep.getArtifactId());
+					System.out.println("=versionDep=");
+				}
 			}
 			
 		}

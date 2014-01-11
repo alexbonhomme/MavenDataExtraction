@@ -54,7 +54,7 @@ public class DataExtractionImpl implements DataExtraction {
 		String keyProject = project.getGroupId() + "." + project.getArtifactId();
 		
 		if (version == null) {
-			System.out.println("this pom have no version number : " + pom);
+			System.out.println("this pom haven't version number : " + pom);
 			return;
 		}
 		
