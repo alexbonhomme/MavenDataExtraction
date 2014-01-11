@@ -1,6 +1,8 @@
 package fr.lille1.maven_data_extraction.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of a version for a {@link Project} object.
@@ -12,6 +14,7 @@ public class Version {
 
 	private final String versionNumber;
 	private final File pomFile;
+	private final List<Project> listDependents; 
 
 	/**
 	 * @param version
@@ -20,6 +23,7 @@ public class Version {
 	public Version(String version, File pom) {
 		this.versionNumber = version;
 		this.pomFile = pom;
+		this.listDependents = new ArrayList<Project>();
 	}
 
 	public String getVersionNumber() {
@@ -48,5 +52,11 @@ public class Version {
 
 		return true;
 	}
+
+	public List<Project> getDependents() {
+		return listDependents;
+	}
+	
+	
 
 }
