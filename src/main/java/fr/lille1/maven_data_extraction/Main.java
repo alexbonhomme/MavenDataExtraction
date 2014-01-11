@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
+import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
+import fr.lille1.maven_data_extraction.core.extraction.DataExtractionImpl;
 
 public class Main {
 

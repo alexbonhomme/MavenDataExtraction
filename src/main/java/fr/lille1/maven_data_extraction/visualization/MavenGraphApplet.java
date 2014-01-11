@@ -7,9 +7,9 @@ import org.jgrapht.ext.JGraphXAdapter;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.swing.mxGraphComponent;
 
-import fr.lille1.maven_data_extraction.core.MavenLabeledEdge;
-import fr.lille1.maven_data_extraction.core.MavenMultigraph;
 import fr.lille1.maven_data_extraction.core.Project;
+import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
+import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 
 /**
  * 

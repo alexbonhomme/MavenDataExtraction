@@ -1,4 +1,4 @@
-package fr.lille1.maven_data_extraction.core;
+package fr.lille1.maven_data_extraction.core.graph;
 
 import java.util.List;
 import java.util.Set;
@@ -6,6 +6,8 @@ import java.util.Set;
 import org.jgrapht.Graph;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.graph.DefaultEdge;
+
+import fr.lille1.maven_data_extraction.core.Project;
 
 /**
  * This {@link Graph graph} represent the projects and their dependencies from

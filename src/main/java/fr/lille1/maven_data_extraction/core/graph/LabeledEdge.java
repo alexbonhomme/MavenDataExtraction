@@ -1,4 +1,4 @@
-package fr.lille1.maven_data_extraction.core;
+package fr.lille1.maven_data_extraction.core.graph;
 
 import org.jgrapht.graph.DefaultEdge;
 

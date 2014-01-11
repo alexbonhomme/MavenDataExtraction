@@ -9,6 +9,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
+import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
+import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
+
 /**
  * 
  * @author Alexandre Bonhomme

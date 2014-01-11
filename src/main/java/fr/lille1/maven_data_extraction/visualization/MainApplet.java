@@ -4,11 +4,11 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
-import fr.lille1.maven_data_extraction.core.MavenLabeledEdge;
-import fr.lille1.maven_data_extraction.core.MavenMultigraph;
-import fr.lille1.maven_data_extraction.core.MavenMultigraphLabeled;
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
+import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
+import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
+import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
 
 /**
  * @author Alexandre Bonhomme

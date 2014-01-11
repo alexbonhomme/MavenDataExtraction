@@ -1,10 +1,12 @@
-package fr.lille1.maven_data_extraction.core;
+package fr.lille1.maven_data_extraction.core.graph;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gag.annotation.disclaimer.AhaMoment;
 import com.google.gag.enumeration.Where;
+
+import fr.lille1.maven_data_extraction.core.Project;
 
 /**
  * 
