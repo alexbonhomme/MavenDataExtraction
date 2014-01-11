@@ -125,4 +125,10 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 		return projectMap;
 	}
+
+	public HashMap<String, Project> getProjectMap() {
+		return projectMap;
+	}
+	
+	
 }
