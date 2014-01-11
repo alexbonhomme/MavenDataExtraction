@@ -1,12 +1,14 @@
 package fr.lille1.maven_data_extraction.core.graph;
 
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gag.annotation.disclaimer.AhaMoment;
 import com.google.gag.enumeration.Where;
 
 import fr.lille1.maven_data_extraction.core.Project;
+import fr.lille1.maven_data_extraction.core.Version;
+import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
 
 /**
  * 
@@ -14,16 +16,16 @@ import fr.lille1.maven_data_extraction.core.Project;
  * 
  * @param <G>
  */
-public class MavenMultigraphFactory<G> {
+public class MavenMultigraphFactory {
 
 	private static final int INIT_MAP_SIZE = 500000;
 
-	private final Class<? extends G> graphClass;
+	private final Class<? extends MavenMultigraph<?>> graphClass;
 
 	/**
 	 * @param graphClass
 	 */
-	public MavenMultigraphFactory(Class<? extends G> graphClass) {
+	public MavenMultigraphFactory(Class<? extends MavenMultigraph<?>> graphClass) {
 		this.graphClass = graphClass;
 	}
 
@@ -42,23 +44,42 @@ public class MavenMultigraphFactory<G> {
 	 *   get all Project dependencies from Map.
 	 *   add Edge between Projects.
 	 */
-	public G build() {
-		Map<String, Project> mapOfProjects = new HashMap<String, Project>(
-				INIT_MAP_SIZE);
+	public MavenMultigraph<?> build(DataExtraction extractor) {
+		/*
+		 * Get all projects from the specified extractor
+		 */
+		Map<String, Project> mapOfProjects = extractor.getAllProject();
 
-		// TODO Implement data extraction from pom files
-		// Example :
-		// mapOfProjects.put(groupId + artifactId, new Project(groupId,
-		// artifactId, ...);
+		/*
+		 * Creating and filling of the dependencies graph
+		 */
+		MavenMultigraph<?> graph = createGraph();
 
-		G graph = createGraph();
+		// Adding all vertices
+		for (Project project : mapOfProjects.values()) {
+			graph.addVertex(project);
+		}
+		
+		// Adding all edges (dependencies per versions)
+		for (Project project : mapOfProjects.values()) {
+			Iterator<Version> it = project.getVersionsIterator();
+			while (it.hasNext()) {
+				Version version = it.next();
 
-		// TODO Implement vertex adding and edge connecting
+				/*-
+				 * Some problems here... How can I get dependencies per version? There is no methods. 
+				 * Did we need a getDependencies() in Version class ?
+				 * 
+				 * IMHO we have to collect the dependencies list in the first pass on the POMs list.
+				 */
+				// TODO Adding edges for the dependencies
+			}
+		}
 
 		return graph;
 	}
 
-	private G createGraph() {
+	private MavenMultigraph<?> createGraph() {
 		try {
 			return graphClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
