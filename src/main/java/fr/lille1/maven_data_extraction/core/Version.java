@@ -26,6 +26,14 @@ public class Version {
 		this.listDependents = new ArrayList<Project>();
 	}
 
+	public Version(String versionNumber, File pomFile,
+			List<Project> listDependents) {
+		super();
+		this.versionNumber = versionNumber;
+		this.pomFile = pomFile;
+		this.listDependents = listDependents;
+	}
+
 	public String getVersionNumber() {
 		return versionNumber;
 	}
