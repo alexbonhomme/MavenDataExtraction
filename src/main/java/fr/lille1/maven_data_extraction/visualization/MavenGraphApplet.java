@@ -1,5 +1,8 @@
 package fr.lille1.maven_data_extraction.visualization;
 
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 import javax.swing.JApplet;
 
 import org.jgrapht.ext.JGraphXAdapter;
@@ -20,8 +23,8 @@ public class MavenGraphApplet extends JApplet {
 
 	private static final long serialVersionUID = -5809860607499098885L;
 
-	private JGraphXAdapter<Project, MavenLabeledEdge> adapter;
 	private final MavenMultigraph<MavenLabeledEdge> graph;
+	private JGraphXAdapter<Project, MavenLabeledEdge> adapter;
 
 	/**
 	 * @param graph
@@ -36,12 +39,25 @@ public class MavenGraphApplet extends JApplet {
 		adapter = new JGraphXAdapter<Project, MavenLabeledEdge>(
 				graph.getListenableGraph());
 
-		getContentPane().add(new mxGraphComponent(adapter));
+		final mxGraphComponent graphComponent = new mxGraphComponent(adapter);
+		getContentPane().add(graphComponent);
+
+		graphComponent.getGraphControl().addMouseWheelListener(
+				new MouseWheelListener() {
+			
+					@Override
+					public void mouseWheelMoved(MouseWheelEvent e) {
+						if (e.getWheelRotation() > 0) {
+							graphComponent.zoomOut();
+						} else {
+							graphComponent.zoomIn();
+						}
+					}
+		});
 
 		// positioning via jgraphx layouts
 		mxCircleLayout layout = new mxCircleLayout(adapter);
 		layout.execute(adapter.getDefaultParent());
-
 	}
 
 }
