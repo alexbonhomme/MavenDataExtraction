@@ -73,7 +73,7 @@ public class MavenMultigraphFactory {
 				Version version = it.next();
 
 				// Added an edge for each dependence
-				for (Project depProject : version.getDependents()) {
+				for (Project depProject : version.getDependencies()) {
 					// Here we get the correct reference about the project we're
 					// looking for into the graph
 					Project refDepProject = mapOfProjects.get(depProject

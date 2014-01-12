@@ -11,35 +11,45 @@ public class Pom {
 	private final File pomFile;
 	private final String groupId;
 	private final String artifactId;
-	private final String versionNumber;
-	private List<Project> dependents;
+	private String versionNumber;
+	private String parent;
+	private List<Project> dependencies;
 
-	private static final Logger log = Logger
-			.getLogger(Pom.class);
-	
+	private static final Logger log = Logger.getLogger(Pom.class);
+
 	public Pom(File pom, String groupId, String artifactId, String versionNumber) {
 		this.pomFile = pom;
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.versionNumber = versionNumber;
-		this.dependents = new ArrayList<Project>();
+		this.parent = null;
+		this.dependencies = new ArrayList<Project>();
+
+		testFieldContaint();
 	}
 
-	public Project createProject() {
+	private void testFieldContaint() {
 		if ((groupId == null) || (artifactId == null)) {
 			throw new NullPointerException(
 					"This pom haven't GroupId or ArtifiactId : "
 							+ pomFile.toString());
 		}
+		
+		if (versionNumber == null) {
+			log.debug("Pom without version" + pomFile);
+			versionNumber = "last";
+		}
+	}
+
+	public Project createProject() {
 		return new Project(groupId, artifactId);
 	}
 
 	public Version createVersion() {
-		if (versionNumber == null) {
-			log.debug("Pom without version" + pomFile);
-			return new Version("last", pomFile, dependents);
-		}
-		return new Version(versionNumber, pomFile, dependents);
+		Version version = new Version(versionNumber);
+		version.setListDependencies(dependencies);
+		version.setParentName(parent);
+		return version;
 	}
 
 	public File getPomFile() {
@@ -58,15 +68,27 @@ public class Pom {
 		return versionNumber;
 	}
 
+	public String getParent() {
+		return parent;
+	}
+
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+
+	public boolean hasParent() {
+		return parent != null;
+	}
+
 	public List<Project> getDependents() {
-		return dependents;
+		return dependencies;
 	}
-	
+
 	public void setDependents(List<Project> dependents) {
-		this.dependents = dependents;
+		this.dependencies = dependents;
 	}
-	
+
 	public void AddDependency(Project project) {
-		dependents.add(project);
+		dependencies.add(project);
 	}
 }

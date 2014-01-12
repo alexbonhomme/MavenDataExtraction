@@ -2,8 +2,6 @@ package fr.lille1.maven_data_extraction.core;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,13 +12,13 @@ public class ProjectTest {
 	@Before
 	public void setUp() throws Exception {
 		project = new Project("com.googlecode.jmockit", "guava");
-		project.addVersion(new Version("0.0.1", new File("")));
-		project.addVersion(new Version("0.1.1", new File("")));
+		project.addVersion(new Version("0.0.1"));
+		project.addVersion(new Version("0.1.1"));
 	}
 
 	@Test
 	public void testAddVersion() {
-		Version newVersion = new Version("0.2", new File(""));
+		Version newVersion = new Version("0.2");
 		project.addVersion(newVersion);
 		assertEquals(3, project.getVersionsSize());
 		assertEquals(newVersion, project.getVersion("0.2"));

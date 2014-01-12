@@ -78,51 +78,53 @@ public class DataExtractionImpl implements DataExtraction {
 
 	private Pom pomExtract(File pomFile) throws NullPointerException {
 		SAXBuilder builder = new SAXBuilder();
+		
 		try {
 			Document document = builder.build(pomFile);
+			
 			Element rootNode = document.getRootElement();
 			Namespace ns = rootNode.getNamespace();
 			Element dependenciesNode = rootNode.getChild("dependencies", ns);
+			Element parent = rootNode.getChild("parent", ns);
 			
 			String groupId = rootNode.getChildText("groupId", ns);
 			String artifactId = rootNode.getChildText("artifactId", ns);
 			String versionNumber = rootNode.getChildText("version", ns);
-			
-			//If groupId is null, we take that of its parent
+
+
+			// If groupId is null, we take that of its parent
 			if (groupId == null) {
 				
-			Element parent = rootNode.getChild("parent", ns);
 				if (parent == null) {
 					throw new NullPointerException("pom without GroupId : " + pomFile);
 				}
-				
+
 				Element groupIdParent = parent.getChild("groupId", ns);
 				if (groupIdParent == null) {
-					throw new NullPointerException("pom without GroupId : " + pomFile);
+					throw new NullPointerException("pom without GroupId : "	+ pomFile);
 				}
-				
+
 				groupId = groupIdParent.getText();
 			}
 
 			Pom pom = new Pom(pomFile, groupId, artifactId, versionNumber);
-			
+
+			if (parent != null) {
+				String parentName = parent.getChildText("groupId", ns).concat(".").concat(parent.getChildText("artifactId", ns));
+				pom.setParent(parentName);
+			}
+
 			if (dependenciesNode == null) {
 				return pom;
 			}
-			
-			try {
-				extractDependencies(pom, ns, dependenciesNode);
-			} catch (NullPointerException e) {
-				System.err.println(e.getMessage());
-			}
-			
-			return pom;
 
-		} catch (JDOMException e) {
-			System.err.println(e.getMessage());
-		} catch (IOException e) {
+			extractDependencies(pom, ns, dependenciesNode);
+			return pom;
+			
+		} catch (JDOMException | IOException | NullPointerException e) {
 			System.err.println(e.getMessage());
 		}
+
 		return null;
 	}
 
@@ -147,15 +149,18 @@ public class DataExtractionImpl implements DataExtraction {
 
 			if (versionNumberDep == null) {
 				versionNumberDep = "last";
-				log.debug("Dependency without version : " + pom.getPomFile().toString());
+				log.debug("Dependency without version : "
+						+ pom.getPomFile().toString());
 			}
-			
-			if (pom.getGroupId().equals(groupIdDep) && pom.getArtifactId().equals(artifactIdDep)) {
-				throw new NullPointerException("Pom is dependent of himself : " + pom.getPomFile().toString());
+
+			if (pom.getGroupId().equals(groupIdDep)
+					&& pom.getArtifactId().equals(artifactIdDep)) {
+				throw new NullPointerException("Pom is dependent of himself : "
+						+ pom.getPomFile().toString());
 			}
 
 			Project project = new Project(groupIdDep, artifactIdDep);
-			Version version = new Version(versionNumberDep, null);
+			Version version = new Version(versionNumberDep);
 
 			project.addVersion(version);
 			pom.AddDependency(project);

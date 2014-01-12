@@ -3,7 +3,6 @@ package fr.lille1.maven_data_extraction.core.graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 
 import org.junit.Before;
@@ -11,9 +10,6 @@ import org.junit.Test;
 
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
-import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
-import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
-import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
 
 /**
  * 
@@ -33,15 +29,15 @@ public class MavenMultigraphLabeledTest {
 		graph = new MavenMultigraphLabeled();
 
 		p1 = new Project("org.apache.abdera", "abdera");
-		p1.addVersion(new Version("1.0", new File("")));
-		p1.addVersion(new Version("1.1.1", new File("")));
+		p1.addVersion(new Version("1.0"));
+		p1.addVersion(new Version("1.1.1"));
 
 		p2 = new Project("org.apache.accumulo", "accumulo-core");
-		p2.addVersion(new Version("1.3.6", new File("")));
+		p2.addVersion(new Version("1.3.6"));
 
 		p3 = new Project("org.apache.ace", "ace-pom");
-		p3.addVersion(new Version("0.8.0-incubator", new File("")));
-		p3.addVersion(new Version("0.8.1-incubator", new File("")));
+		p3.addVersion(new Version("0.8.0-incubator"));
+		p3.addVersion(new Version("0.8.1-incubator"));
 
 		// add the vertices
 		graph.addVertex(p1);
