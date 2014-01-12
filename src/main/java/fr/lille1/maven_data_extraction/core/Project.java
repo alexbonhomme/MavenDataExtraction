@@ -96,12 +96,19 @@ public class Project {
 	@Hack(value = "do not compare the versionsList")
 	@Override
 	public boolean equals(Object obj) {
-		Project project = (Project) obj;
+		if (this == obj) {
+			return true;
+		}
 
-		if (project == null) {
+		if (obj == null) {
 			return false;
 		}
 
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		Project project = (Project) obj;
 		if (!project.getArtifactId().equals(artifactId)) {
 			return false;
 		}
@@ -112,4 +119,5 @@ public class Project {
 
 		return true;
 	}
+
 }
