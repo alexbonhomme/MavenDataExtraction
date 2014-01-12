@@ -111,7 +111,7 @@ public class DataExtractionImpl implements DataExtraction {
 			}
 			
 			try {
-				pom.setDependents(extractDependencies(pomFile, ns, dependenciesNode));
+				extractDependencies(pom, ns, dependenciesNode);
 			} catch (NullPointerException e) {
 				System.err.println(e.getMessage());
 			}
@@ -126,11 +126,10 @@ public class DataExtractionImpl implements DataExtraction {
 		return null;
 	}
 
-	private List<Project> extractDependencies(File pomFile, Namespace ns,
+	private void extractDependencies(Pom pom, Namespace ns,
 			Element dependenciesNode) throws NullPointerException {
 		List<Element> listDependency = dependenciesNode.getChildren(
 				"dependency", ns);
-		List<Project> dependencies = new ArrayList<Project>();
 		String groupIdDep;
 		String artifactIdDep;
 		String versionNumberDep;
@@ -143,21 +142,24 @@ public class DataExtractionImpl implements DataExtraction {
 			if ((groupIdDep == null) || (artifactIdDep == null)) {
 				throw new NullPointerException(
 						"This pom have depedency without groupId or arifactId  : "
-								+ pomFile.toString());
+								+ pom.getPomFile().toString());
 			}
 
 			if (versionNumberDep == null) {
 				versionNumberDep = "last";
-				log.debug("dependency without version : " + pomFile);
+				log.debug("Dependency without version : " + pom.getPomFile().toString());
+			}
+			
+			if (pom.getGroupId().equals(groupIdDep) && pom.getArtifactId().equals(artifactIdDep)) {
+				throw new NullPointerException("Pom is dependent of himself : " + pom.getPomFile().toString());
 			}
 
 			Project project = new Project(groupIdDep, artifactIdDep);
 			Version version = new Version(versionNumberDep, null);
 
 			project.addVersion(version);
-			dependencies.add(project);
+			pom.AddDependency(project);
 		}
-		return dependencies;
 	}
 
 }

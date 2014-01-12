@@ -28,7 +28,7 @@ public class Pom {
 	public Project createProject() {
 		if ((groupId == null) || (artifactId == null)) {
 			throw new NullPointerException(
-					"this pom haven't GroupId or ArtifiactId : "
+					"This pom haven't GroupId or ArtifiactId : "
 							+ pomFile.toString());
 		}
 		return new Project(groupId, artifactId);
@@ -42,7 +42,7 @@ public class Pom {
 		return new Version(versionNumber, pomFile, dependents);
 	}
 
-	public File getPom() {
+	public File getPomFile() {
 		return pomFile;
 	}
 
