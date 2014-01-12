@@ -28,7 +28,6 @@ public class Version {
 
 	public Version(String versionNumber, File pomFile,
 			List<Project> listDependents) {
-		super();
 		this.versionNumber = versionNumber;
 		this.pomFile = pomFile;
 		this.listDependents = listDependents;
