@@ -59,8 +59,8 @@ public class DataExtractionImpl implements DataExtraction {
 
 		try {
 			Pom pom = pomExtract(pomFile);
-			Project project = pom.getProject();
-			Version version = pom.getVersion();
+			Project project = pom.createProject();
+			Version version = pom.createVersion();
 			String keyProject = project.getGroupId() + "."
 					+ project.getArtifactId();
 

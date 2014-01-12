@@ -25,7 +25,7 @@ public class Pom {
 		this.dependents = new ArrayList<Project>();
 	}
 
-	public Project getProject() {
+	public Project createProject() {
 		if ((groupId == null) || (artifactId == null)) {
 			throw new NullPointerException(
 					"this pom haven't GroupId or ArtifiactId : "
@@ -34,7 +34,7 @@ public class Pom {
 		return new Project(groupId, artifactId);
 	}
 
-	public Version getVersion() {
+	public Version createVersion() {
 		if (versionNumber == null) {
 			log.debug("Pom without version" + pomFile);
 			return new Version("last", pomFile, dependents);
