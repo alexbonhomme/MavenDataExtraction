@@ -90,15 +90,18 @@ public class DataExtractionImpl implements DataExtraction {
 				return pom;
 			}
 			
-			pom.setDependents(extractDependencies(pomFile, ns, dependenciesNode));
+			try {
+				pom.setDependents(extractDependencies(pomFile, ns, dependenciesNode));
+			} catch (NullPointerException e) {
+				System.err.println(e.getMessage());
+			}
+			
 			return pom;
 
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 		return null;
 	}
