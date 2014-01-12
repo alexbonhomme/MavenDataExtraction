@@ -3,6 +3,8 @@ package fr.lille1.maven_data_extraction.core.graph;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.google.gag.annotation.disclaimer.AhaMoment;
 import com.google.gag.enumeration.Where;
 
@@ -18,6 +20,8 @@ import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
  */
 public class MavenMultigraphFactory {
 
+	private static final Logger log = Logger
+			.getLogger(MavenMultigraphFactory.class);
 	private static final int INIT_MAP_SIZE = 500000;
 
 	private final Class<? extends MavenMultigraph<?>> graphClass;
@@ -48,11 +52,13 @@ public class MavenMultigraphFactory {
 		/*
 		 * Get all projects from the specified extractor
 		 */
+		log.info("Starting .pom parsing...");
 		Map<String, Project> mapOfProjects = extractor.getAllProject();
 
 		/*
 		 * Creating and filling of the dependencies graph
 		 */
+		log.info("Starting graph creation...");
 		MavenMultigraph<?> graph = createGraph();
 
 		// Adding all vertices
