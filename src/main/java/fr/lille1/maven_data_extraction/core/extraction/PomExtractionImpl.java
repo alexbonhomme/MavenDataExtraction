@@ -25,17 +25,21 @@ public class PomExtractionImpl implements PomExtraction {
 	public PomExtractionImpl(File pom) {
 		this.pom = pom;
 		this.dependents = new ArrayList<Project>();
-		extractData();
+		try {
+			extractData();
+		} catch (NullPointerException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
-	private void extractData() {
+	private void extractData() throws NullPointerException {
 		SAXBuilder builder = new SAXBuilder();
 		try {
 			Document document = (Document) builder.build(pom);
 			Element rootNode = document.getRootElement();
 			Namespace ns = rootNode.getNamespace();
 			Element dependenciesNode = rootNode.getChild("dependencies", ns);
-
+			
 			groupId = rootNode.getChildText("groupId", ns);
 			artifactId = rootNode.getChildText("artifactId", ns);
 			versionNumber = rootNode.getChildText("version", ns);
@@ -44,27 +48,7 @@ public class PomExtractionImpl implements PomExtraction {
 				return;
 			}
 			
-			List<Element> listDependency = dependenciesNode.getChildren(
-					"dependency", ns);
-			String groupIdDep;
-			String artifactIdDep;
-			String versionNumberDep;
-
-			for (Element dependencyNode : listDependency) {
-				groupIdDep = dependencyNode.getChildText("groupId", ns);
-				artifactIdDep = dependencyNode.getChildText("artifactId", ns);
-				versionNumberDep = dependencyNode.getChildText("version", ns);
-
-				if (groupIdDep == null || artifactIdDep == null || versionNumberDep == null) {
-					System.err.println("This pom have depedency without groupId, arifactId or version : " + pom.toString());
-				}
-				
-				Project project = new Project(groupIdDep, artifactIdDep);
-				Version version = new Version(versionNumberDep, null);
-				
-				project.addVersion(version);
-				dependents.add(project);
-			}
+			extractDependencies(ns, dependenciesNode);
 
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
@@ -76,19 +60,50 @@ public class PomExtractionImpl implements PomExtraction {
 
 	}
 
+	private void extractDependencies(Namespace ns, Element dependenciesNode)
+			throws NullPointerException {
+		List<Element> listDependency = dependenciesNode.getChildren(
+				"dependency", ns);
+		String groupIdDep;
+		String artifactIdDep;
+		String versionNumberDep;
+
+		for (Element dependencyNode : listDependency) {
+			groupIdDep = dependencyNode.getChildText("groupId", ns);
+			artifactIdDep = dependencyNode.getChildText("artifactId", ns);
+			versionNumberDep = dependencyNode.getChildText("version", ns);
+
+			if (groupIdDep == null || artifactIdDep == null
+					|| versionNumberDep == null) {
+				throw new NullPointerException(
+						"This pom have depedency without groupId, arifactId or version : "
+								+ pom.toString());
+			}
+
+			Project project = new Project(groupIdDep, artifactIdDep);
+			Version version = new Version(versionNumberDep, null);
+
+			project.addVersion(version);
+			dependents.add(project);
+		}
+	}
+
 	@Override
-	public Project getProject() {
+	public Project getProject() throws NullPointerException {
 		if (groupId == null || artifactId == null) {
-			return null;
+			throw new NullPointerException(
+					"this pom haven't GroupId or ArtifiactId : "
+							+ pom.toString());
 		}
 		return new Project(groupId, artifactId);
 
 	}
 
 	@Override
-	public Version getVersion() {
+	public Version getVersion() throws NullPointerException {
 		if (versionNumber == null) {
-			return null;
+			throw new NullPointerException("this pom haven't version number : "
+					+ pom.toString());
 		}
 		return new Version(versionNumber, pom, dependents);
 	}

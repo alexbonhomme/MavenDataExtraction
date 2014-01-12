@@ -46,33 +46,28 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 		return listFile;
 	}
-	
-	@SuppressWarnings("unused")
-	private void addProject(File pom){
+
+	private void addProject(File pom) throws NullPointerException {
 		PomExtraction pomExtraction = new PomExtractionImpl(pom);
-		Project project = pomExtraction.getProject();
-		Version version = pomExtraction.getVersion();
-		String keyProject = project.getGroupId() + "." + project.getArtifactId();
-		
-		if (project == null){
-			System.err.println("this pom haven't GroupId or ArtifiactId : " + pom);
-			return;
-		}
-		
-		if (version == null) {
-			System.err.println("this pom haven't version number : " + pom);
-			return;
-		}
-		
-		if (projectMap.containsKey(keyProject)){
-			project = projectMap.get(keyProject);
-			project.addVersion(version);
-		} else {
-			project.addVersion(version);
-			projectMap.put(keyProject, project);
+
+		try {
+			Project project = pomExtraction.getProject();
+			Version version = pomExtraction.getVersion();
+			String keyProject = project.getGroupId() + "."
+					+ project.getArtifactId();
+
+			if (projectMap.containsKey(keyProject)) {
+				project = projectMap.get(keyProject);
+				project.addVersion(version);
+			} else {
+				project.addVersion(version);
+				projectMap.put(keyProject, project);
+			}
+		} catch (NullPointerException e) {
+			System.err.println(e.getMessage());
 		}
 	}
-	
+
 	public HashMap<String, Project> getAllProject() {
 		List<File> listPom = findPom(folder);
 
@@ -80,5 +75,5 @@ public class DataExtractionImpl implements DataExtraction {
 			addProject(pom);
 		}
 		return projectMap;
-	}	
+	}
 }
