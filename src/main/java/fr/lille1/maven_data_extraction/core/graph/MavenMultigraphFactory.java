@@ -66,13 +66,29 @@ public class MavenMultigraphFactory {
 			while (it.hasNext()) {
 				Version version = it.next();
 
-				/*-
-				 * Some problems here... How can I get dependencies per version? There is no methods. 
-				 * Did we need a getDependencies() in Version class ?
-				 * 
-				 * IMHO we have to collect the dependencies list in the first pass on the POMs list.
-				 */
-				// TODO Adding edges for the dependencies
+				// Added an edge for each dependence
+				for (Project depProject : version.getDependents()) {
+					// Here we get the correct reference about the project we're
+					// looking for into the graph
+					Project refDepProject = mapOfProjects.get(depProject
+							.getGroupId() + "." + depProject.getArtifactId());
+
+					// This case appeared when the dependence isn't in the set
+					// of analyzed projects
+					if (refDepProject == null) {
+						continue;
+					}
+
+					// XXX This is pretty confused because here we're just
+					// looking for the dep version, but we have to use a
+					// temporary Project object
+					Version depVersion = depProject.getVersionsIterator()
+							.next();
+
+					graph.addEdge(project, refDepProject,
+							version.getVersionNumber(),
+							depVersion.getVersionNumber());
+				}
 			}
 		}
 
@@ -83,7 +99,7 @@ public class MavenMultigraphFactory {
 		try {
 			return graphClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Graph factory faild", e);
+			throw new RuntimeException("Graph factory failed", e);
 		}
 	}
 }
