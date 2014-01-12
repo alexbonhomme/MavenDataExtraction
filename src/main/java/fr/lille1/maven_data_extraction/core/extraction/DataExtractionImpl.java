@@ -47,14 +47,20 @@ public class DataExtractionImpl implements DataExtraction {
 		return listFile;
 	}
 	
+	@SuppressWarnings("unused")
 	private void addProject(File pom){
-		PomExtraction pomExtraction = new PomExtraction(pom);
+		PomExtraction pomExtraction = new PomExtractionImpl(pom);
 		Project project = pomExtraction.getProject();
 		Version version = pomExtraction.getVersion();
 		String keyProject = project.getGroupId() + "." + project.getArtifactId();
 		
+		if (project == null){
+			System.err.println("this pom haven't GroupId or ArtifiactId : " + pom);
+			return;
+		}
+		
 		if (version == null) {
-			System.out.println("this pom haven't version number : " + pom);
+			System.err.println("this pom haven't version number : " + pom);
 			return;
 		}
 		
