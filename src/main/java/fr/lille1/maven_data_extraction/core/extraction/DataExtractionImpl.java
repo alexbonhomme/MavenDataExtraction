@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -20,6 +21,9 @@ public class DataExtractionImpl implements DataExtraction {
 
 	private final File folder;
 	private final HashMap<String, Project> projectMap;
+
+	private static final Logger log = Logger
+			.getLogger(DataExtractionImpl.class);
 
 	public DataExtractionImpl(File folder) {
 		this.folder = folder;
@@ -40,7 +44,7 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 		return listFile;
 	}
-	
+
 	@Override
 	public HashMap<String, Project> getAllProject() {
 		List<File> listPom = findPom(folder);
@@ -50,7 +54,7 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 		return projectMap;
 	}
-	
+
 	private void addProject(File pomFile) throws NullPointerException {
 
 		try {
@@ -71,7 +75,7 @@ public class DataExtractionImpl implements DataExtraction {
 			System.err.println(e.getMessage());
 		}
 	}
-	
+
 	private Pom pomExtract(File pomFile) throws NullPointerException {
 		SAXBuilder builder = new SAXBuilder();
 		try {
@@ -83,6 +87,22 @@ public class DataExtractionImpl implements DataExtraction {
 			String groupId = rootNode.getChildText("groupId", ns);
 			String artifactId = rootNode.getChildText("artifactId", ns);
 			String versionNumber = rootNode.getChildText("version", ns);
+			
+			//If groupId is null, we take that of its parent
+			if (groupId == null) {
+				
+			Element parent = rootNode.getChild("parent", ns);
+				if (parent == null) {
+					throw new NullPointerException("pom without GroupId : " + pomFile);
+				}
+				
+				Element groupIdParent = parent.getChild("groupId", ns);
+				if (groupIdParent == null) {
+					throw new NullPointerException("pom without GroupId : " + pomFile);
+				}
+				
+				groupId = groupIdParent.getText();
+			}
 
 			Pom pom = new Pom(pomFile, groupId, artifactId, versionNumber);
 			
@@ -105,12 +125,12 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 		return null;
 	}
-	
-	private List<Project> extractDependencies(File pomFile, Namespace ns, Element dependenciesNode)
-			throws NullPointerException {
+
+	private List<Project> extractDependencies(File pomFile, Namespace ns,
+			Element dependenciesNode) throws NullPointerException {
 		List<Element> listDependency = dependenciesNode.getChildren(
 				"dependency", ns);
-		List<Project>dependencies = new ArrayList<Project>();
+		List<Project> dependencies = new ArrayList<Project>();
 		String groupIdDep;
 		String artifactIdDep;
 		String versionNumberDep;
@@ -120,11 +140,15 @@ public class DataExtractionImpl implements DataExtraction {
 			artifactIdDep = dependencyNode.getChildText("artifactId", ns);
 			versionNumberDep = dependencyNode.getChildText("version", ns);
 
-			if ((groupIdDep == null) || (artifactIdDep == null)
-					|| (versionNumberDep == null)) {
+			if ((groupIdDep == null) || (artifactIdDep == null)) {
 				throw new NullPointerException(
-						"This pom have depedency without groupId, arifactId or version : "
+						"This pom have depedency without groupId or arifactId  : "
 								+ pomFile.toString());
+			}
+
+			if (versionNumberDep == null) {
+				versionNumberDep = "last";
+				log.debug("dependency without version : " + pomFile);
 			}
 
 			Project project = new Project(groupIdDep, artifactIdDep);
@@ -135,6 +159,5 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 		return dependencies;
 	}
-
 
 }

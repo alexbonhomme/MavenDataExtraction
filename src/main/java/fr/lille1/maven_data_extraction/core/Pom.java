@@ -4,41 +4,46 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class Pom {
 
-	private final File pom;
+	private final File pomFile;
 	private final String groupId;
 	private final String artifactId;
 	private final String versionNumber;
 	private List<Project> dependents;
 
+	private static final Logger log = Logger
+			.getLogger(Pom.class);
+	
 	public Pom(File pom, String groupId, String artifactId, String versionNumber) {
-		this.pom = pom;
+		this.pomFile = pom;
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.versionNumber = versionNumber;
 		this.dependents = new ArrayList<Project>();
 	}
 
-	public Project getProject() throws NullPointerException {
+	public Project getProject() {
 		if ((groupId == null) || (artifactId == null)) {
 			throw new NullPointerException(
 					"this pom haven't GroupId or ArtifiactId : "
-							+ pom.toString());
+							+ pomFile.toString());
 		}
 		return new Project(groupId, artifactId);
 	}
 
-	public Version getVersion() throws NullPointerException {
+	public Version getVersion() {
 		if (versionNumber == null) {
-			throw new NullPointerException("this pom haven't version number : "
-					+ pom.toString());
+			log.debug("Pom without version" + pomFile);
+			return new Version("last", pomFile, dependents);
 		}
-		return new Version(versionNumber, pom, dependents);
+		return new Version(versionNumber, pomFile, dependents);
 	}
 
 	public File getPom() {
-		return pom;
+		return pomFile;
 	}
 
 	public String getGroupId() {
