@@ -52,6 +52,10 @@ public class Version {
 		this.listDependencies = listDependencies;
 	}
 
+	public boolean hasParent() {
+		return parent != null;
+	}
+
 	public String getParentName() {
 		return parent;
 	}
