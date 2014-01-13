@@ -28,7 +28,7 @@ public class Pom {
 		testFieldContaint();
 	}
 
-	private void testFieldContaint() {
+	private void testFieldContaint() throws NullPointerException{
 		if ((groupId == null) || (artifactId == null)) {
 			throw new NullPointerException(
 					"This pom haven't GroupId or ArtifiactId : "
