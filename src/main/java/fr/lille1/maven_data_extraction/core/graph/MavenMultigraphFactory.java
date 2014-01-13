@@ -74,7 +74,7 @@ public class MavenMultigraphFactory {
 		long total = listOfProject.size(), current = 1;
 		for (Project project : listOfProject) {
 			// Display the progression
-			System.out.print("[" + current + "/" + total + "] : " + project);
+			System.out.println("[" + current + "/" + total + "] : " + project);
 			++current;
 
 			Iterator<Version> it = project.getVersionsIterator();
