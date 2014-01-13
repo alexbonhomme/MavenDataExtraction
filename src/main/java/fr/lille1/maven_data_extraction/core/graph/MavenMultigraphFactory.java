@@ -67,12 +67,24 @@ public class MavenMultigraphFactory {
 		}
 		
 		// Adding all edges (dependencies per versions)
+		// TODO TO MUCH COMPLEXITY
 		for (Project project : mapOfProjects.values()) {
+			log.trace(project);
+
 			Iterator<Version> it = project.getVersionsIterator();
 			while (it.hasNext()) {
 				Version version = it.next();
 
-				// Added an edge for each dependence
+				// We add a specific edge when the project is child of another.
+				// (i.e. When the project has a parent)
+				if (version.hasParent()) {
+					Project parentProject = mapOfProjects.get(version
+							.getParentName());
+
+					graph.addEdge(project, parentProject, "child", "parent");
+				}
+
+				// Add an edge for each dependence
 				for (Project depProject : version.getDependencies()) {
 					// Here we get the correct reference about the project we're
 					// looking for into the graph
