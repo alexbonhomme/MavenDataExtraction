@@ -11,6 +11,7 @@ import com.google.gag.enumeration.Where;
 
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
+import fr.lille1.maven_data_extraction.core.exceptions.MavenGraphException;
 import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
 
 /**
@@ -67,10 +68,15 @@ public class MavenMultigraphFactory {
 			graph.addVertex(project);
 		}
 		
+		// GC
+		mapOfProjects = null;
+		
 		/*
-		 * TODO TO MUCH COMPLEXITY Adding all edges (dependencies per versions)
+		 * TODO TO MUCH COMPLEXITY
+		 * 
+		 * Adding all edges (dependencies per versions)
 		 */
-		Collection<Project> listOfProject = mapOfProjects.values();
+		Collection<Project> listOfProject = graph.getAllVertices();
 		long total = listOfProject.size(), current = 1;
 		for (Project project : listOfProject) {
 			// Display the progression
@@ -80,33 +86,23 @@ public class MavenMultigraphFactory {
 			Iterator<Version> it = project.getVersionsIterator();
 			while (it.hasNext()) {
 				Version version = it.next();
+				log.debug(version);
 
 				// We add a specific edge when the project is child of another.
 				// (i.e. When the project has a parent)
 				if (version.hasParent()) {
-					Project parentProject = mapOfProjects.get(version
-							.getParentName());
+					Project parentProject = graph.getVertex(
+							version.getParentGroupId(),
+							version.getParentAritfactId());
 
 					if (parentProject != null) {
-						log.debug("Could not find the parent of " + project);
 						graph.addEdge(project, parentProject, "child", "parent");
 					}
 				}
 
 				// Add an edge for each dependence
 				for (Project depProject : version.getDependencies()) {
-					// Here we get the correct reference about the project we're
-					// looking for into the graph
-					Project refDepProject = mapOfProjects.get(depProject
-							.getGroupId() + "." + depProject.getArtifactId());
-
-					// This case appeared when the dependence isn't in the set
-					// of analyzed projects
-					if (refDepProject == null) {
-						log.debug("Could not find " + depProject
-								+ " in tje dependecies graph.");
-						continue;
-					}
+					log.trace(depProject);
 
 					// XXX This is pretty confused because here we're just
 					// looking for the dep version, but we have to use a
@@ -114,9 +110,15 @@ public class MavenMultigraphFactory {
 					Version depVersion = depProject.getVersionsIterator()
 							.next();
 
-					graph.addEdge(project, refDepProject,
-							version.getVersionNumber(),
-							depVersion.getVersionNumber());
+					try {
+						graph.addEdge(project, depProject,
+								version.getVersionNumber(),
+								depVersion.getVersionNumber());
+					} catch (MavenGraphException e) {
+						log.debug(e.getLocalizedMessage());
+					} catch (IllegalArgumentException e) {
+						log.debug(e.getLocalizedMessage());
+					}
 				}
 			}
 		}
