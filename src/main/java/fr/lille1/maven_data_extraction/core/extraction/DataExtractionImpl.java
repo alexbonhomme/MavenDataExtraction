@@ -114,10 +114,7 @@ public class DataExtractionImpl implements DataExtraction {
 			Pom pom = new Pom(pomFile, groupId, artifactId, versionNumber);
 
 			if (parent != null) {
-				String parentName = parent.getChildText("groupId", ns)
-						.concat(".")
-						.concat(parent.getChildText("artifactId", ns));
-				pom.setParent(parentName);
+				pom.setParentArtifactId(parent.getChildText("artifactId", ns));
 			}
 
 			if (dependenciesNode == null) {

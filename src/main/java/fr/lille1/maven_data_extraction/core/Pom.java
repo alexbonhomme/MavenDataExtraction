@@ -12,7 +12,7 @@ public class Pom {
 	private final String groupId;
 	private final String artifactId;
 	private String versionNumber;
-	private String parent;
+	private String parentArtifactId;
 	private List<Project> dependencies;
 
 	private static final Logger log = Logger.getLogger(Pom.class);
@@ -22,7 +22,7 @@ public class Pom {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.versionNumber = versionNumber;
-		this.parent = null;
+		this.parentArtifactId = null;
 		this.dependencies = new ArrayList<Project>();
 
 		testFieldContaint();
@@ -48,7 +48,8 @@ public class Pom {
 	public Version createVersion() {
 		Version version = new Version(versionNumber);
 		version.setListDependencies(dependencies);
-		version.setParentName(parent);
+		version.setParentAritfactId(parentArtifactId);
+		version.setParentGroupId(groupId);
 		return version;
 	}
 
@@ -68,16 +69,16 @@ public class Pom {
 		return versionNumber;
 	}
 
-	public String getParent() {
-		return parent;
+	public String getParentArtifactId() {
+		return parentArtifactId;
 	}
 
-	public void setParent(String parent) {
-		this.parent = parent;
+	public void setParentArtifactId(String parentArtifactId) {
+		this.parentArtifactId = parentArtifactId;
 	}
 
 	public boolean hasParent() {
-		return parent != null;
+		return parentArtifactId != null;
 	}
 
 	public List<Project> getDependents() {

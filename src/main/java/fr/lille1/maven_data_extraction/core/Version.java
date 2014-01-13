@@ -12,7 +12,8 @@ import java.util.List;
 public class Version {
 
 	private final String versionNumber;
-	private String parent;
+	private String parentGroupId;
+	private String parentAritfactId;
 	private List<Project> listDependencies; 
 
 	/**
@@ -20,7 +21,6 @@ public class Version {
 	 */
 	public Version(String versionNumber){
 		this.versionNumber = versionNumber;
-		this.parent = null;
 		this.listDependencies = new ArrayList<Project>();
 	}
 
@@ -37,15 +37,23 @@ public class Version {
 	}
 
 	public boolean hasParent() {
-		return parent != null;
-	}
-
-	public String getParentName() {
-		return parent;
+		return ((parentAritfactId != null) && (parentGroupId != null));
 	}
 	
-	public void setParentName(String parent) {
-		this.parent = parent;
+	public String getParentGroupId() {
+		return parentGroupId;
+	}
+
+	public void setParentGroupId(String parentGroupId) {
+		this.parentGroupId = parentGroupId;
+	}
+
+	public String getParentAritfactId() {
+		return parentAritfactId;
+	}
+
+	public void setParentAritfactId(String parentAritfactId) {
+		this.parentAritfactId = parentAritfactId;
 	}
 
 	@Override
@@ -66,7 +74,7 @@ public class Version {
 	@Override
 	public String toString() {
 		return "Verion: " + versionNumber
-				+ (hasParent() ? " - Parent: " + parent : "");
+				+ (hasParent() ? " - Parent: " + parentGroupId + "." + parentAritfactId : "");
 	}
 
 }
