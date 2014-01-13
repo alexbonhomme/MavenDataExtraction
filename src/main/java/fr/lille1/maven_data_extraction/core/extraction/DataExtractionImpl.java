@@ -30,8 +30,7 @@ public class DataExtractionImpl implements DataExtraction {
 		this.projectMap = new HashMap<String, Project>();
 	}
 
-	@Override
-	public List<File> findPom(File folder) {
+	private List<File> findPom(File folder) {
 		List<File> listFile = new ArrayList<File>();
 
 		File[] files = folder.listFiles();
@@ -59,14 +58,14 @@ public class DataExtractionImpl implements DataExtraction {
 		return projectMap;
 	}
 
-	private void addProject(File pomFile) throws NullPointerException {
+	private void addProject(File pomFile) {
 
 		try {
 			Pom pom = pomExtract(pomFile);
 			Project project = pom.createProject();
 			Version version = pom.createVersion();
-			String keyProject = project.getGroupId() + "."
-					+ project.getArtifactId();
+			String keyProject = project.getGroupId().concat(".")
+					.concat(project.getArtifactId());
 
 			if (projectMap.containsKey(keyProject)) {
 				project = projectMap.get(keyProject);
@@ -80,32 +79,33 @@ public class DataExtractionImpl implements DataExtraction {
 		}
 	}
 
-	private Pom pomExtract(File pomFile) throws NullPointerException {
+	private Pom pomExtract(File pomFile) {
 		SAXBuilder builder = new SAXBuilder();
-		
+
 		try {
 			Document document = builder.build(pomFile);
-			
+
 			Element rootNode = document.getRootElement();
 			Namespace ns = rootNode.getNamespace();
 			Element dependenciesNode = rootNode.getChild("dependencies", ns);
 			Element parent = rootNode.getChild("parent", ns);
-			
+
 			String groupId = rootNode.getChildText("groupId", ns);
 			String artifactId = rootNode.getChildText("artifactId", ns);
 			String versionNumber = rootNode.getChildText("version", ns);
 
-
 			// If groupId is null, we take that of its parent
-			if (groupId == null) {
-				
+				if (groupId == null) {
+
 				if (parent == null) {
-					throw new NullPointerException("pom without GroupId : " + pomFile);
+					throw new NullPointerException("pom without GroupId : "
+							+ pomFile);
 				}
 
 				Element groupIdParent = parent.getChild("groupId", ns);
 				if (groupIdParent == null) {
-					throw new NullPointerException("pom without GroupId : "	+ pomFile);
+					throw new NullPointerException("pom without GroupId : "
+							+ pomFile);
 				}
 
 				groupId = groupIdParent.getText();
@@ -114,7 +114,9 @@ public class DataExtractionImpl implements DataExtraction {
 			Pom pom = new Pom(pomFile, groupId, artifactId, versionNumber);
 
 			if (parent != null) {
-				String parentName = parent.getChildText("groupId", ns).concat(".").concat(parent.getChildText("artifactId", ns));
+				String parentName = parent.getChildText("groupId", ns)
+						.concat(".")
+						.concat(parent.getChildText("artifactId", ns));
 				pom.setParent(parentName);
 			}
 
@@ -124,7 +126,7 @@ public class DataExtractionImpl implements DataExtraction {
 
 			extractDependencies(pom, ns, dependenciesNode);
 			return pom;
-			
+
 		} catch (JDOMException | IOException | NullPointerException e) {
 			System.err.println(e.getMessage());
 		}
