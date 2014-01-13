@@ -4,6 +4,8 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
+
 import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
 import fr.lille1.maven_data_extraction.core.extraction.DataExtractionImpl;
 import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
@@ -16,9 +18,10 @@ import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
  *
  */
 public class MainApplet {
+	private final static Logger log = Logger.getLogger(MainApplet.class);
 
 	private final static File root = new File("src/test/resources/asia");
-	private final static File root_big = new File("../download/com");
+	private final static File root_big = new File("../download/org/apache");
 
 	/**
 	 * @param args
@@ -31,12 +34,14 @@ public class MainApplet {
 				MavenMultigraphLabeled.class);
 		DataExtraction extractor = new DataExtractionImpl(root_big);
 
+		log.info("Starting graph creation...");
 		MavenMultigraph<MavenLabeledEdge> graph = (MavenMultigraph<MavenLabeledEdge>) factory
 				.build(extractor);
 
 		/*
 		 * Applet creation
 		 */
+		log.info("Starting graph visualization...");
 		MavenGraphApplet applet = new MavenGraphApplet(graph);
 		applet.init();
 
