@@ -18,7 +18,6 @@ public class Version {
 	/**
 	 * @param version
 	 */
-	
 	public Version(String versionNumber){
 		this.versionNumber = versionNumber;
 		this.parent = null;
@@ -27,21 +26,6 @@ public class Version {
 
 	public String getVersionNumber() {
 		return versionNumber;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		Version version = (Version) obj;
-
-		if (version == null) {
-			return false;
-		}
-
-		if (!version.getVersionNumber().equals(versionNumber)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	public List<Project> getDependencies() {
@@ -62,6 +46,27 @@ public class Version {
 	
 	public void setParentName(String parent) {
 		this.parent = parent;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Version version = (Version) obj;
+
+		if (version == null) {
+			return false;
+		}
+
+		if (!version.getVersionNumber().equals(versionNumber)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Verion: " + versionNumber
+				+ (hasParent() ? " - Parent: " + parent : "");
 	}
 
 }

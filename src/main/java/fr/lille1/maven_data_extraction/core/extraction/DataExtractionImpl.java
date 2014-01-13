@@ -34,6 +34,10 @@ public class DataExtractionImpl implements DataExtraction {
 		List<File> listFile = new ArrayList<File>();
 
 		File[] files = folder.listFiles();
+		if (files == null) {
+			return listFile;
+		}
+
 		for (File file : files) {
 			if (file.isDirectory()) {
 				listFile.addAll(findPom(file));

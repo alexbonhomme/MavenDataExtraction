@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import lombok.NonNull;
+
 import org.jgrapht.Graph;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.graph.DefaultListenableGraph;
@@ -34,6 +36,7 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 		this.graph = new DirectedMultigraph<Project, MavenLabeledEdge>(MavenLabeledEdge.class);
 	}
 
+	@Override
 	@AhaMoment(Where.TRAFFIC_JAM)
 	public ListenableGraph<Project, MavenLabeledEdge> getListenableGraph() {
 		return new DefaultListenableGraph<Project, MavenLabeledEdge>(this.graph);
@@ -72,7 +75,8 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	}
 
 	@Override
-	public MavenLabeledEdge addEdge(Project source, Project target,
+	public MavenLabeledEdge addEdge(@NonNull Project source,
+			@NonNull Project target,
 			String sourceVersion, String targetVersion) {
 		MavenLabeledEdge newEdge = new MavenLabeledEdge(sourceVersion,
 				targetVersion);
@@ -89,7 +93,8 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	}
 
 	@Override
-	public Set<MavenLabeledEdge> removeAllEdges(Project source, Project target) {
+	public Set<MavenLabeledEdge> removeAllEdges(@NonNull Project source,
+			@NonNull Project target) {
 		return graph.removeAllEdges(source, target);
 	}
 

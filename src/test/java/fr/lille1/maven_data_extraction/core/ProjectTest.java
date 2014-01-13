@@ -34,7 +34,7 @@ public class ProjectTest {
 	@Test
 	public void testEqualsObject() {
 		Project newProject = new Project("com.googlecode.jmockit", "guava");
-		newProject.equals(project);
+		assertEquals(project, newProject);
 	}
 
 }
