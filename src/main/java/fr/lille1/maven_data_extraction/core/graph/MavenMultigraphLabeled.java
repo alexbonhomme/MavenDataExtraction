@@ -1,8 +1,10 @@
 package fr.lille1.maven_data_extraction.core.graph;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import lombok.NonNull;
@@ -13,10 +15,13 @@ import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.DirectedMultigraph;
 
 import com.google.gag.annotation.disclaimer.AhaMoment;
-import com.google.gag.annotation.remark.OhNoYouDidnt;
+import com.google.gag.annotation.disclaimer.CarbonFootprint;
+import com.google.gag.annotation.remark.LOL;
+import com.google.gag.enumeration.CO2Units;
 import com.google.gag.enumeration.Where;
 
 import fr.lille1.maven_data_extraction.core.Project;
+import fr.lille1.maven_data_extraction.core.exceptions.MavenGraphException;
 
 /**
  * Implementation of a {@link MavenMultigraph} with {@link MavenLabeledEdge}.
@@ -28,12 +33,16 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 
 	private final Graph<Project, MavenLabeledEdge> graph;
 
+	@LOL
+	private final Map<String, Project> values;
+
 	/**
 	 * Initialize a {@link DirectedMultigraph directed multigraph} with vertex
 	 * type {@link Project} and labeled edges type {@link MavenLabeledEdge}
 	 */
 	public MavenMultigraphLabeled() {
 		this.graph = new DirectedMultigraph<Project, MavenLabeledEdge>(MavenLabeledEdge.class);
+		this.values = new HashMap<String, Project>();
 	}
 
 	@Override
@@ -43,35 +52,31 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	}
 
 	@Override
-	public boolean addVertex(Project p) {
+	public boolean addVertex(@NonNull Project p) {
+		values.put(p.toString(), p);
 		return graph.addVertex(p);
 	}
 
 	@Override
-	public boolean removeVertex(Project p) {
+	public boolean removeVertex(@NonNull Project p) {
+		values.remove(p.toString());
 		return graph.removeVertex(p);
 	}
 
 	@Override
-	public boolean containsVertex(Project p) {
-		return graph.containsVertex(p);
+	public boolean containsVertex(@NonNull Project p) {
+		return values.containsKey(p.toString());
 	}
 
-	@OhNoYouDidnt(fingerSnapCount = 5)
+	@CarbonFootprint(value = 1, units = CO2Units.GRAMS_PER_MEGAJOULE)
 	@Override
 	public Project getVertex(String groupId, String artifactId) {
+		return values.get(groupId + "." + artifactId);
+	}
 
-		Iterator<Project> it = graph.vertexSet().iterator();
-		while (it.hasNext()) {
-			Project project = it.next();
-
-			if (project.getGroupId().equals(groupId)
-					&& project.getArtifactId().equals(artifactId)) {
-				return project;
-			}
-		}
-
-		return null;
+	@Override
+	public Collection<Project> getAllVertices() {
+		return graph.vertexSet();
 	}
 
 	@Override
@@ -82,9 +87,10 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 				targetVersion);
 		if (graph.addEdge(source, target, newEdge)) {
 			return newEdge;
-		} else {
-			return null;
 		}
+
+		throw new MavenGraphException("Impossible to added an edge between "
+				+ source + " and " + target);
 	}
 
 	@Override
@@ -93,11 +99,9 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	}
 
 	@Override
-	public Set<MavenLabeledEdge> removeAllEdges(@NonNull Project source,
-			@NonNull Project target) {
+	public Set<MavenLabeledEdge> removeAllEdges(Project source, Project target) {
 		return graph.removeAllEdges(source, target);
 	}
-
 
 	@Override
 	public List<Project> getDependencies(Project p) {

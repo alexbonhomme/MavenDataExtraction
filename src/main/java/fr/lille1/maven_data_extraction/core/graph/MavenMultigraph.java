@@ -1,5 +1,6 @@
 package fr.lille1.maven_data_extraction.core.graph;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -55,6 +56,12 @@ public interface MavenMultigraph<E> {
 	 * and <code>artifactId</code>, or {@link null} otherwise.
 	 */
 	Project getVertex(String groupId, String artifactId);
+
+	/**
+	 * Return a {@link Collection} of {@link Project projects} which contain all
+	 * the vertices of the graph.
+	 */
+	Collection<Project> getAllVertices();
 
 	/**
 	 * Add an edge between the {@link Project} <code>source</code> and the
