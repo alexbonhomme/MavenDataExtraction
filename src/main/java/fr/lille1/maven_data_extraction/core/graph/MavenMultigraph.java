@@ -58,7 +58,8 @@ public interface MavenMultigraph<E> {
 
 	/**
 	 * Add an edge between the {@link Project} <code>source</code> and the
-	 * {@link Project} <code>target</code>
+	 * {@link Project} <code>target</code> with a tag composed of
+	 * <code>sourceVersion</code> and <code>targetVersion</code>
 	 * 
 	 * @return The created {@link E edge}, {@link null} otherwise.
 	 */
