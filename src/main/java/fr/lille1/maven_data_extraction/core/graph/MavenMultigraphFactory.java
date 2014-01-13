@@ -1,5 +1,6 @@
 package fr.lille1.maven_data_extraction.core.graph;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -66,10 +67,15 @@ public class MavenMultigraphFactory {
 			graph.addVertex(project);
 		}
 		
-		// Adding all edges (dependencies per versions)
-		// TODO TO MUCH COMPLEXITY
-		for (Project project : mapOfProjects.values()) {
-			log.trace(project);
+		/*
+		 * TODO TO MUCH COMPLEXITY Adding all edges (dependencies per versions)
+		 */
+		Collection<Project> listOfProject = mapOfProjects.values();
+		long total = listOfProject.size(), current = 1;
+		for (Project project : listOfProject) {
+			// Display the progression
+			System.out.print("[" + current + "/" + total + "] : " + project);
+			++current;
 
 			Iterator<Version> it = project.getVersionsIterator();
 			while (it.hasNext()) {
@@ -81,7 +87,10 @@ public class MavenMultigraphFactory {
 					Project parentProject = mapOfProjects.get(version
 							.getParentName());
 
-					graph.addEdge(project, parentProject, "child", "parent");
+					if (parentProject != null) {
+						log.debug("Could not find the parent of " + project);
+						graph.addEdge(project, parentProject, "child", "parent");
+					}
 				}
 
 				// Add an edge for each dependence
@@ -94,6 +103,8 @@ public class MavenMultigraphFactory {
 					// This case appeared when the dependence isn't in the set
 					// of analyzed projects
 					if (refDepProject == null) {
+						log.debug("Could not find " + depProject
+								+ " in tje dependecies graph.");
 						continue;
 					}
 
