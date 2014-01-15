@@ -83,17 +83,19 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 			String sourceVersion, String targetVersion) {
 		MavenLabeledEdge newEdge = new MavenLabeledEdge(sourceVersion,
 				targetVersion);
-		if (graph.addEdge(source, target, newEdge)) {
+		Project realSource = values.get(source.getFullName());
+		Project realTarget = values.get(target.getFullName());
+		if (graph.addEdge(realSource, realTarget, newEdge)) {
 			return newEdge;
 		}
 
-		throw new MavenGraphException("Impossible to added an edge between "
+		throw new MavenGraphException("Impossible to add an edge between "
 				+ source + " and " + target);
 	}
 
 	@Override
 	public Set<MavenLabeledEdge> edgesOf(Project p) {
-		return graph.edgesOf(p);
+		return graph.edgesOf(values.get(p.getFullName()));
 	}
 
 	@Override
@@ -113,7 +115,9 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 
 	@Override
 	public Set<MavenLabeledEdge> removeAllEdges(Project source, Project target) {
-		return graph.removeAllEdges(source, target);
+		Project realSource = values.get(source.getFullName());
+		Project realTarget = values.get(target.getFullName());
+		return graph.removeAllEdges(realSource, realTarget);
 	}
 
 	@Override
