@@ -45,6 +45,13 @@ public class Project {
 	}
 
 	/**
+	 * Return the name of the {@link Project} as <code>groupId.artifactId</code>
+	 */
+	public String getFullName() {
+		return groupId + "." + artifactId;
+	}
+
+	/**
 	 * Add a {@link Version} to the {@link Project}. If a {@link Version
 	 * version} with the same version number exists that replace the all value.
 	 * 
