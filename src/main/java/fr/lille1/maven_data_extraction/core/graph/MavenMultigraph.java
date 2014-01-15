@@ -67,9 +67,10 @@ public interface MavenMultigraph<E> {
 	 * {@link Project} <code>target</code> with a tag composed of
 	 * <code>sourceVersion</code> and <code>targetVersion</code>
 	 * 
-	 * @return The created {@link E edge}, {@link null} otherwise.
+	 * @return <code>true</code> if this graph did not already contain the
+	 *         specified edge.
 	 */
-	E addEdge(Project source, Project target, String sourceVersion,
+	boolean addEdge(Project source, Project target, String sourceVersion,
 			String targetVersion);
 
 	/**
