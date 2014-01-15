@@ -1,9 +1,7 @@
 package fr.lille1.maven_data_extraction.core.graph;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,6 +92,21 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	}
 
 	@Override
+	public Set<MavenLabeledEdge> edgesOf(Project p) {
+		return graph.edgesOf(p);
+	}
+
+	@Override
+	public Project getEdgeSource(MavenLabeledEdge e) {
+		return graph.getEdgeSource(e);
+	}
+
+	@Override
+	public Project getEdgeTarget(MavenLabeledEdge e) {
+		return graph.getEdgeTarget(e);
+	}
+
+	@Override
 	public boolean removeEdge(MavenLabeledEdge e) {
 		return graph.removeEdge(e);
 	}
@@ -101,34 +114,6 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	@Override
 	public Set<MavenLabeledEdge> removeAllEdges(Project source, Project target) {
 		return graph.removeAllEdges(source, target);
-	}
-
-	@Override
-	public List<Project> getDependencies(Project p) {
-		List<Project> dependencies = new ArrayList<Project>();
-
-		for (MavenLabeledEdge edge : graph.edgesOf(p)) {
-			Project target = graph.getEdgeTarget(edge);
-			if (!target.equals(p)) {
-				dependencies.add(target);
-			}
-		}
-
-		return dependencies;
-	}
-
-	@Override
-	public List<Project> getUsages(Project p) {
-		List<Project> usages = new ArrayList<Project>();
-
-		for (MavenLabeledEdge edge : graph.edgesOf(p)) {
-			Project source = graph.getEdgeSource(edge);
-			if (!source.equals(p)) {
-				usages.add(source);
-			}
-		}
-
-		return usages;
 	}
 
 	@Override

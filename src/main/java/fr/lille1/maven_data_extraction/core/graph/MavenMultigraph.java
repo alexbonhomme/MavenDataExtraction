@@ -1,7 +1,6 @@
 package fr.lille1.maven_data_extraction.core.graph;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;
@@ -74,6 +73,13 @@ public interface MavenMultigraph<E> {
 			String targetVersion);
 
 	/**
+	 * Returns a set of all edges touching the specified {@link Project}
+	 * <code>p</code>. If no edges are touching the specified {@link Project}
+	 * returns an empty set.
+	 */
+	Set<E> edgesOf(Project p);
+
+	/**
 	 * Remove the specified edge <code>e</code> from the {@link Graph graph}
 	 * 
 	 * @return {@link true} if and only if the graph contained the specified
@@ -90,15 +96,14 @@ public interface MavenMultigraph<E> {
 	Set<E> removeAllEdges(Project source, Project target);
 
 	/**
-	 * List all dependencies of the {@link Project} <code>p</code>
+	 * Returns the source vertex of an edge.
 	 */
-	List<Project> getDependencies(Project p);
+	Project getEdgeSource(E e);
 
 	/**
-	 * List all {@link Project Project} which have {@link Project}
-	 * <code>p</code> in their dependencies
+	 * Returns the target vertex of an edge.
 	 */
-	List<Project> getUsages(Project p);
+	Project getEdgeTarget(E e);
 
 	/**
 	 * Return an instance of {@link ListenableGraph} built from the internal
