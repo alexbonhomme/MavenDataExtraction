@@ -1,9 +1,6 @@
 package fr.lille1.maven_data_extraction.core.graph;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,22 +56,6 @@ public class MavenMultigraphLabeledTest {
 	public void testGetVertex() {
 		Project project = graph.getVertex("org.apache.abdera", "abdera");
 		assertEquals(p1, project);
-	}
-
-	@Test
-	public void testGetDependencies() {
-		List<Project> dependencies = graph.getDependencies(p1);
-		assertEquals(2, dependencies.size());
-		assertTrue(dependencies.contains(p2));
-		assertTrue(dependencies.contains(p3));
-	}
-
-	@Test
-	public void testGetUsages() {
-		List<Project> usages = graph.getUsages(p3);
-		assertEquals(2, usages.size());
-		assertTrue(usages.contains(p1));
-		assertTrue(usages.contains(p2));
 	}
 
 }
