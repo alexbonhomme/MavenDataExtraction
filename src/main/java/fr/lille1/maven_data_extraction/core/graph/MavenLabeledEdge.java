@@ -25,20 +25,20 @@ public class MavenLabeledEdge extends LabeledEdge<SimpleEntry<String, String>> {
 	/**
 	 * Return the version number of the source project.
 	 */
-	public String getSourceVersion() {
+	public String getSourceVersionNumber() {
 		return label.getKey();
 	}
 
 	/**
 	 * Return the version number of the target project.
 	 */
-	public String getTargetVersion() {
+	public String getTargetVersionNumber() {
 		return label.getValue();
 	}
 
 	@Override
 	public String toString() {
-		return "(" + getSourceVersion() + " -> " + getTargetVersion() + ")";
+		return "(" + getSourceVersionNumber() + " -> " + getTargetVersionNumber() + ")";
 	}
 
 }
