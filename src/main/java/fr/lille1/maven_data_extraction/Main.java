@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
+import org.python.core.PySystemState;
+import org.python.util.PythonInterpreter;
 
 import com.google.gag.annotation.disclaimer.AhaMoment;
 import com.google.gag.enumeration.Where;
@@ -15,6 +17,7 @@ import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphFactory;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
+import fr.lille1.maven_data_extraction.core.metrics.MavenMetrics;
 
 public class Main {
 
@@ -41,38 +44,40 @@ public class Main {
 				.build(extractor);
 
 		/*
-		 * Console running
+		 * Metrics
 		 */
-		System.out.println("###############################");
-		System.out.println("#");
-		System.out.println("# Maven Data Extraction");
-		System.out.println("#");
-		System.out.println("###############################");
+		MavenMetrics metrics = new MavenMetrics(graph);
+
+		/*
+		 * Python console
+		 */
+		PySystemState.initialize();
+		PythonInterpreter pyi = new PythonInterpreter();
+		pyi.exec("from fr.lille1.maven_data_extraction.core import Project, Version");
+		pyi.exec("from fr.lille1.maven_data_extraction.core.metrics import MavenMetrics");
+		pyi.set("Metrics", metrics);
+
+		System.out.println("\n\nMaven Data Extraction");
+		System.out.println("\nJython " + PySystemState.version);
+		System.out.println("\nUse exit() or Ctrl-D (i.e. EOF) to exit");
 
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
-			System.out.print("> ");
+			System.out.print(">>> ");
 			String cmd = scanner.nextLine();
 
-			String[] cmdTab = cmd.split(" ");
-			switch (cmdTab[0]) {
-			case "stats":
-				if (cmdTab.length < 2) {
-					System.out.println("Usage : stats groupIp.artifactId");
-					continue;
-				}
-
-				System.out.println("Statistics for " + cmdTab[1] + " :");
-				break;
-
-			case "exit":
+			if("exit()".equals(cmd)) {
 				scanner.close();
 				System.out.println("Bye!");
-				return;
 
-			default:
-				System.out.println("Command not found.");
-				break;
+				return;
+			}
+			
+			// Jython interpreting
+			try {
+				pyi.exec(cmd);
+			} catch (Exception e) {
+				System.out.println(e);
 			}
 		}
 	}
