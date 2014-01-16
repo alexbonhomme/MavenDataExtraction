@@ -12,9 +12,9 @@ import fr.lille1.maven_data_extraction.core.Version;
  */
 public interface MavenMetricsConsole {
 
-	void printGeneralStats();
+	void printAllStats();
 
-	void printStats(String groupId, String artifactId);
+	void printStatsOf(String groupId, String artifactId);
 
 	List<Project> dependenciesOf(Project p);
 
@@ -33,5 +33,9 @@ public interface MavenMetricsConsole {
 
 	List<Project> usagesOf(String groupId, String artifactId,
 			String versionNumber);
+
+	double confidenceOf(Project p);
+
+	double confidenceOf(String groupId, String artifactId);
 
 }

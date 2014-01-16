@@ -20,7 +20,7 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 	}
 
 	@Override
-	public void printGeneralStats() {
+	public void printAllStats() {
 		String out = new String();
 
 		out += "\tNumber of artifacts: " + graph.getAllVertices().size();
@@ -29,11 +29,12 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 	}
 
 	@Override
-	public void printStats(String groupId, String artifactId) {
+	public void printStatsOf(String groupId, String artifactId) {
 		String out = new String();
 
 		out += "\tDependencies: " + dependenciesOf(groupId, artifactId).size();
 		out += "\n\tUsages: " + usagesOf(groupId, artifactId).size();
+		out += "\n\tConfidence: " + confidenceOf(groupId, artifactId);
 
 		System.out.println(out);
 	}
@@ -80,5 +81,15 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 			String versionNumber) {
 		return usagesOf(new Project(groupId, artifactId), new Version(
 				versionNumber));
+	}
+
+	@Override
+	public double confidenceOf(Project p) {
+		return metrics.confidence(p);
+	}
+
+	@Override
+	public double confidenceOf(String groupId, String artifactId) {
+		return confidenceOf(new Project(groupId, artifactId));
 	}
 }

@@ -31,4 +31,11 @@ public interface MavenMetrics {
 	 */
 	List<Project> computeAllUsages(Project p);
 
+	/**
+	 * Compute a metric of confidence for a {@link Project} <code>p</code>
+	 * 
+	 * @return A value higher or equal to zero
+	 */
+	double confidence(Project p);
+
 }
