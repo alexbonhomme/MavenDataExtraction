@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
@@ -28,6 +31,7 @@ public class MavenDataExtractionMultiThread implements MavenDataExtraction {
 
 	private final File root;
 	private final ConcurrentHashMap<String, Project> projectMap;
+	private final ExecutorService pool;
 
 	private static final Logger log = Logger
 			.getLogger(MavenDataExtractionMultiThread.class);
@@ -35,11 +39,26 @@ public class MavenDataExtractionMultiThread implements MavenDataExtraction {
 	public MavenDataExtractionMultiThread(File root) {
 		this.root = root;
 		this.projectMap = new ConcurrentHashMap<String, Project>();
+		this.pool = Executors.newCachedThreadPool();
+	}
+
+	public MavenDataExtractionMultiThread(File root, int nThreads) {
+		this.root = root;
+		this.projectMap = new ConcurrentHashMap<String, Project>();
+		this.pool = Executors.newFixedThreadPool(nThreads);
 	}
 
 	@Override
 	public Collection<Project> computeAllProjects() {
 		processPomFile(root);
+
+		// Waiting for threads finishing
+		try {
+			pool.shutdown();
+			pool.awaitTermination(1, TimeUnit.HOURS);
+		} catch (InterruptedException e) {
+			log.error(e);
+		}
 
 		return projectMap.values();
 	}
@@ -54,14 +73,14 @@ public class MavenDataExtractionMultiThread implements MavenDataExtraction {
 			if (f.isDirectory()) {
 				processPomFile(f);
 			} else {
-				log.trace("Processing " + f);
-				new Thread(new Runnable() {
+				pool.execute(new Runnable() {
 
 					@Override
 					public void run() {
+						log.trace("Processing " + f);
 						addProject(f);
 					}
-				}).start();
+				});
 			}
 		}
 	}
