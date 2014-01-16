@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.IllegalNameException;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
@@ -130,7 +131,13 @@ public class MavenDataExtractionMultiThread implements MavenDataExtraction {
 			extractDependencies(pom, ns, dependenciesNode);
 			return pom;
 
-		} catch (JDOMException | IOException | NullPointerException e) {
+		} catch (JDOMException | IllegalNameException e) {
+			throw new MavenDataExtractionException("JDOM Exception on file : "
+					+ pomFile, e);
+		} catch (IOException e) {
+			throw new MavenDataExtractionException("I/O Exception on file : "
+					+ pomFile, e);
+		} catch (MavenDataExtractionException e) {
 			throw new MavenDataExtractionException(e);
 		}
 	}
