@@ -20,6 +20,7 @@ import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
 
 public class MainConsole {
 
+	private final static String version = "0.4.2";
 	private final static Logger log = Logger.getLogger(MainConsole.class);
 
 	@AhaMoment(Where.TOILET)
@@ -41,6 +42,8 @@ public class MainConsole {
 		MavenDataExtraction extractor = new MavenDataExtractionMultiThread(root);
 
 		log.info("Starting graph creation...");
+
+		@SuppressWarnings("unchecked")
 		MavenMultigraph<MavenLabeledEdge> graph = (MavenMultigraph<MavenLabeledEdge>) factory
 				.build(extractor);
 		
@@ -56,17 +59,16 @@ public class MainConsole {
 		pyi.set("MavenGraph", graph);
 		pyi.set("Metrics", new MavenMetricsConsoleJython(graph));
 
-		System.out.println("\n\nMaven Data Extraction");
-		System.out.println("Processing time: " + processingTimeMillis / 1000
+		System.out.println("\n\nPyvert " + version
+				+ " (Console using Jython 2.7-b1)");
+		System.out.println("\nProcessing time: " + processingTimeMillis / 1000
 				+ " second(s)");
 		long memoryUsedMb = (Runtime.getRuntime().totalMemory() - Runtime
 				.getRuntime().freeMemory()) / (1024 * 1024);
 		System.out.println("Used Memory: " + memoryUsedMb + " MB");
 
-		System.out.println("\nJython " + PySystemState.version);
-		System.out.println("Use exit() or Ctrl-D (i.e. EOF) to exit");
 		System.out.println("\nObjects available:");
-		System.out.println("\n\tMavenGraph");
+		System.out.println("\n\tMavenGraph (e.i. MavenMultigraph methods)");
 		System.out
 				.println("\n\tMetrics"
 						+ "\n\t\tprintAllStats()"
@@ -81,6 +83,8 @@ public class MainConsole {
 						+ "\n\t\tusagesOf(String groupId, String artifactId, String versionNumber)"
 						+ "\n\t\tconfidenceOf(Project p)"
 						+ "\n\t\tconfidenceOf(String groupId, String artifactId)");
+
+		System.out.println("\nUse exit() or Ctrl-D (i.e. EOF) to exit");
 
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
