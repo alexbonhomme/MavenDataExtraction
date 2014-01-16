@@ -51,13 +51,13 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 
 	@Override
 	public boolean addVertex(@NonNull Project p) {
-		values.put(p.toString(), p);
+		values.put(p.getFullName(), p);
 		return graph.addVertex(p);
 	}
 
 	@Override
 	public boolean removeVertex(@NonNull Project p) {
-		values.remove(p.toString());
+		values.remove(p.getFullName());
 		return graph.removeVertex(p);
 	}
 
@@ -89,9 +89,9 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 
 		try {
 			return graph.addEdge(realSource, realTarget, newEdge);
-		} catch (NullPointerException | IllegalArgumentException _) {
+		} catch (NullPointerException | IllegalArgumentException e) {
 			throw new MavenGraphException(
-					"Source or target project not found in the graph.");
+					"Source or target project not found in the graph.", e);
 		}
 	}
 
@@ -99,8 +99,8 @@ public class MavenMultigraphLabeled implements MavenMultigraph<MavenLabeledEdge>
 	public Set<MavenLabeledEdge> edgesOf(Project p) {
 		try {
 			return graph.edgesOf(values.get(p.getFullName()));
-		} catch (NullPointerException | IllegalArgumentException _) {
-			throw new MavenGraphException("Project not found in the graph.");
+		} catch (NullPointerException | IllegalArgumentException e) {
+			throw new MavenGraphException("Project not found in the graph.", e);
 		}
 	}
 
