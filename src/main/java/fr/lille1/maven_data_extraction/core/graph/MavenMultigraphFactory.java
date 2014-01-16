@@ -2,7 +2,6 @@ package fr.lille1.maven_data_extraction.core.graph;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -12,7 +11,7 @@ import com.google.gag.enumeration.Where;
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
 import fr.lille1.maven_data_extraction.core.exceptions.MavenGraphException;
-import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtraction;
 
 /**
  * 
@@ -24,8 +23,6 @@ public class MavenMultigraphFactory {
 
 	private static final Logger log = Logger
 			.getLogger(MavenMultigraphFactory.class);
-	private static final int INIT_MAP_SIZE = 500000;
-
 	private final Class<? extends MavenMultigraph<?>> graphClass;
 
 	/**
@@ -50,12 +47,12 @@ public class MavenMultigraphFactory {
 	 *   get all Project dependencies from Map.
 	 *   add Edge between Projects.
 	 */
-	public MavenMultigraph<?> build(DataExtraction extractor) {
+	public MavenMultigraph<?> build(MavenDataExtraction extractor) {
 		/*
 		 * Get all projects from the specified extractor
 		 */
 		log.info("Starting .pom parsing...");
-		Map<String, Project> mapOfProjects = extractor.getAllProject();
+		Collection<Project> projects = extractor.computeAllProjects();
 
 		/*
 		 * Creating and filling of the dependencies graph
@@ -64,12 +61,12 @@ public class MavenMultigraphFactory {
 		MavenMultigraph<?> graph = createGraph();
 
 		// Adding all vertices
-		for (Project project : mapOfProjects.values()) {
+		for (Project project : projects) {
 			graph.addVertex(project);
 		}
 		
 		// GC
-		mapOfProjects = null;
+		projects = null;
 		
 		/*
 		 * TODO TO MUCH COMPLEXITY
@@ -96,7 +93,14 @@ public class MavenMultigraphFactory {
 							version.getParentAritfactId());
 
 					if (parentProject != null) {
-						graph.addEdge(project, parentProject, "child", "parent");
+						try {
+							graph.addEdge(project, parentProject, "child",
+									"parent");
+						} catch (MavenGraphException e) {
+							log.debug(e.getLocalizedMessage());
+						} catch (IllegalArgumentException e) {
+							log.debug(e.getLocalizedMessage());
+						}
 					}
 				}
 

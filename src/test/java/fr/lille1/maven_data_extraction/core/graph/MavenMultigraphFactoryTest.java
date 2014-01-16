@@ -5,8 +5,8 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
-import fr.lille1.maven_data_extraction.core.extraction.DataExtractionImpl;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtraction;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtractionImpl;
 
 public class MavenMultigraphFactoryTest {
 
@@ -21,7 +21,7 @@ public class MavenMultigraphFactoryTest {
 	public void testBuild() {
 		File root = new File("src/test/resources/asia");
 		System.out.println(root.getAbsolutePath());
-		DataExtraction extractor = new DataExtractionImpl(root);
+		MavenDataExtraction extractor = new MavenDataExtractionImpl(root);
 
 		MavenMultigraph<?> graph = factory.build(extractor);
 		// TODO testing
