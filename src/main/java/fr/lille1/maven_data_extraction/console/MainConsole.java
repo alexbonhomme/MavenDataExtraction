@@ -31,6 +31,8 @@ public class MainConsole {
 		File root = new File(args[0]);
 		log.trace(root.getCanonicalPath());
 
+		long startCounter = System.currentTimeMillis();
+
 		/*
 		 * Graph creation
 		 */
@@ -44,10 +46,7 @@ public class MainConsole {
 		MavenMultigraph<MavenLabeledEdge> graph = (MavenMultigraph<MavenLabeledEdge>) factory
 				.build(extractor);
 
-		/*
-		 * Metrics
-		 */
-		MavenMetricsConsole metrics = new MavenMetricsConsoleJython(graph);
+		long processingTimeMillis = System.currentTimeMillis() - startCounter;
 
 		/*
 		 * Python console
@@ -56,9 +55,11 @@ public class MainConsole {
 		PythonInterpreter pyi = new PythonInterpreter();
 		pyi.exec("from fr.lille1.maven_data_extraction.core import Project, Version");
 		// pyi.exec("from fr.lille1.maven_data_extraction.core.metrics import MavenMetrics");
-		pyi.set("Metrics", metrics);
+		pyi.set("Metrics", new MavenMetricsConsoleJython(graph));
 
 		System.out.println("\n\nMaven Data Extraction");
+		System.out.println("Processing time: " + processingTimeMillis / 1000
+				+ " second(s)");
 		System.out.println("\nJython " + PySystemState.version);
 		System.out.println("\nUse exit() or Ctrl-D (i.e. EOF) to exit");
 
