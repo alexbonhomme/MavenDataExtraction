@@ -38,8 +38,6 @@ public class MainConsole {
 		 */
 		MavenMultigraphFactory factory = new MavenMultigraphFactory(
 				MavenMultigraphLabeled.class);
-		// MavenDataExtraction extractor = new
-		// MavenDataExtractionSingleThread(root);
 		MavenDataExtraction extractor = new MavenDataExtractionMultiThread(root);
 
 		log.info("Starting graph creation...");
@@ -54,12 +52,17 @@ public class MainConsole {
 		PySystemState.initialize();
 		PythonInterpreter pyi = new PythonInterpreter();
 		pyi.exec("from fr.lille1.maven_data_extraction.core import Project, Version");
-		// pyi.exec("from fr.lille1.maven_data_extraction.core.metrics import MavenMetrics");
+
+		pyi.set("MavenGraph", graph);
 		pyi.set("Metrics", new MavenMetricsConsoleJython(graph));
 
 		System.out.println("\n\nMaven Data Extraction");
 		System.out.println("Processing time: " + processingTimeMillis / 1000
 				+ " second(s)");
+		long memoryUsedMb = (Runtime.getRuntime().totalMemory() - Runtime
+				.getRuntime().freeMemory()) / (1024 * 1024);
+		System.out.println("Used Memory: " + memoryUsedMb + " MB");
+
 		System.out.println("\nJython " + PySystemState.version);
 		System.out.println("\nUse exit() or Ctrl-D (i.e. EOF) to exit");
 
