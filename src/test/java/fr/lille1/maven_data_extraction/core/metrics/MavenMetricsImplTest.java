@@ -14,9 +14,10 @@ import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
 
-public class MavenMetricsTest {
+public class MavenMetricsImplTest {
 
 	private MavenMultigraph<MavenLabeledEdge> graph;
+	private MavenMetrics metrics;
 
 	private Project p1;
 	private Project p2;
@@ -51,12 +52,13 @@ public class MavenMetricsTest {
 		// p2.v1 -> p3.v2
 		graph.addEdge(p2, p3, p2.getVersion("1.3.6").getVersionNumber(), p3
 				.getVersion("0.8.1-incubator").getVersionNumber());
+
+		metrics = new MavenMetricsImpl(graph);
 	}
 
 	@Test
 	public void testComputeAllDependencies() {
-		List<Project> dependencies = MavenMetrics.computeAllDependencies(graph,
-				p1);
+		List<Project> dependencies = metrics.computeDependencies(p1);
 		assertEquals(2, dependencies.size());
 		assertTrue(dependencies.contains(p2));
 		assertTrue(dependencies.contains(p3));
@@ -64,15 +66,15 @@ public class MavenMetricsTest {
 
 	@Test
 	public void testComputeDependencies() {
-		List<Project> dependencies = MavenMetrics.computeDependencies(graph,
-				p1, p1.getVersion("1.0"));
+		List<Project> dependencies = metrics.computeDependencies(p1,
+				p1.getVersion("1.0"));
 		assertEquals(1, dependencies.size());
 		assertTrue(dependencies.contains(p2));
 	}
 
 	@Test
 	public void testComputeAllUsages() {
-		List<Project> usages = MavenMetrics.computeAllUsages(graph, p3);
+		List<Project> usages = metrics.computeAllUsages(p3);
 		assertEquals(2, usages.size());
 		assertTrue(usages.contains(p1));
 		assertTrue(usages.contains(p2));
@@ -80,7 +82,7 @@ public class MavenMetricsTest {
 
 	@Test
 	public void testComputeUsages() {
-		List<Project> usages = MavenMetrics.computeUsages(graph, p3,
+		List<Project> usages = metrics.computeUsages(p3,
 				p3.getVersion("0.8.1-incubator"));
 		assertEquals(1, usages.size());
 		assertTrue(usages.contains(p2));

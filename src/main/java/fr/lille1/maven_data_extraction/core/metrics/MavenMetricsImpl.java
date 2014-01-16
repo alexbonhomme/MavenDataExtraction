@@ -8,44 +8,26 @@ import fr.lille1.maven_data_extraction.core.Version;
 import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 
-public class MavenMetrics {
+public class MavenMetricsImpl implements MavenMetrics {
 
-	private MavenMetrics() {
+	private final MavenMultigraph<MavenLabeledEdge> graph;
+
+	public MavenMetricsImpl(MavenMultigraph<MavenLabeledEdge> graph) {
+		this.graph = graph;
 	}
 
-	/**
-	 * List all dependencies of the {@link Project} <code>p</code> for a given
-	 * {@link Version} <code>v</code>
-	 */
-	public static List<Project> computeDependencies(
-			MavenMultigraph<MavenLabeledEdge> g, Project p, Version v) {
+	@Override
+	public List<Project> computeDependencies(Project p, Version v) {
 		List<Project> dependencies = new ArrayList<Project>();
 
-		for (MavenLabeledEdge edge : g.edgesOf(p)) {
+		for (MavenLabeledEdge edge : graph.edgesOf(p)) {
 			if (!edge.getSourceVersionNumber().equals(v.getVersionNumber())) {
 				continue;
 			}
 
-			Project target = g.getEdgeTarget(edge);
-			if (!target.equals(p)) {
-				dependencies.add(target);
-			}
-		}
-
-		return dependencies;
-	}
-
-	/**
-	 * List all dependencies of the {@link Project} <code>p</code>
-	 */
-	public static List<Project> computeAllDependencies(
-			MavenMultigraph<MavenLabeledEdge> g, Project p) {
-		List<Project> dependencies = new ArrayList<Project>();
-
-		for (MavenLabeledEdge edge : g.edgesOf(p)) {
 			// We directly compare the target, because if we simply compare the
 			// source, we have to do another call to get the target.
-			Project target = g.getEdgeTarget(edge);
+			Project target = graph.getEdgeTarget(edge);
 			if (!target.equals(p)) {
 				dependencies.add(target);
 			}
@@ -54,21 +36,30 @@ public class MavenMetrics {
 		return dependencies;
 	}
 
-	/**
-	 * List all {@link Project Project} in the given {@link Version}
-	 * <code>v</code> which have {@link Project} <code>p</code> in their
-	 * dependencies
-	 */
-	public static List<Project> computeUsages(
-			MavenMultigraph<MavenLabeledEdge> g, Project p, Version v) {
+	@Override
+	public List<Project> computeDependencies(Project p) {
+		List<Project> dependencies = new ArrayList<Project>();
+
+		for (MavenLabeledEdge edge : graph.edgesOf(p)) {
+			Project target = graph.getEdgeTarget(edge);
+			if (!target.equals(p)) {
+				dependencies.add(target);
+			}
+		}
+
+		return dependencies;
+	}
+
+	@Override
+	public List<Project> computeUsages(Project p, Version v) {
 		List<Project> usages = new ArrayList<Project>();
 
-		for (MavenLabeledEdge edge : g.edgesOf(p)) {
+		for (MavenLabeledEdge edge : graph.edgesOf(p)) {
 			if (!edge.getTargetVersionNumber().equals(v.getVersionNumber())) {
 				continue;
 			}
 
-			Project source = g.getEdgeSource(edge);
+			Project source = graph.getEdgeSource(edge);
 			if (!source.equals(p)) {
 				usages.add(source);
 			}
@@ -77,16 +68,12 @@ public class MavenMetrics {
 		return usages;
 	}
 
-	/**
-	 * List all {@link Project Project} which have {@link Project}
-	 * <code>p</code> in their dependencies
-	 */
-	public static List<Project> computeAllUsages(
-			MavenMultigraph<MavenLabeledEdge> g, Project p) {
+	@Override
+	public List<Project> computeAllUsages(Project p) {
 		List<Project> usages = new ArrayList<Project>();
 
-		for (MavenLabeledEdge edge : g.edgesOf(p)) {
-			Project source = g.getEdgeSource(edge);
+		for (MavenLabeledEdge edge : graph.edgesOf(p)) {
+			Project source = graph.getEdgeSource(edge);
 			if (!source.equals(p)) {
 				usages.add(source);
 			}
