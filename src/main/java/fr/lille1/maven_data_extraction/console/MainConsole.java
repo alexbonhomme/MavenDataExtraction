@@ -1,4 +1,4 @@
-package fr.lille1.maven_data_extraction;
+package fr.lille1.maven_data_extraction.console;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,17 +11,16 @@ import org.python.util.PythonInterpreter;
 import com.google.gag.annotation.disclaimer.AhaMoment;
 import com.google.gag.enumeration.Where;
 
-import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
-import fr.lille1.maven_data_extraction.core.extraction.DataExtractionImpl;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtraction;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtractionImpl;
 import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphFactory;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
-import fr.lille1.maven_data_extraction.core.metrics.MavenMetrics;
 
-public class Main {
+public class MainConsole {
 
-	private final static Logger log = Logger.getLogger(Main.class);
+	private final static Logger log = Logger.getLogger(MainConsole.class);
 
 	@AhaMoment(Where.TOILET)
 	public static void main(String[] args) throws IOException {
@@ -37,7 +36,7 @@ public class Main {
 		 */
 		MavenMultigraphFactory factory = new MavenMultigraphFactory(
 				MavenMultigraphLabeled.class);
-		DataExtraction extractor = new DataExtractionImpl(root);
+		MavenDataExtraction extractor = new MavenDataExtractionImpl(root);
 
 		log.info("Starting graph creation...");
 		MavenMultigraph<MavenLabeledEdge> graph = (MavenMultigraph<MavenLabeledEdge>) factory
@@ -46,7 +45,7 @@ public class Main {
 		/*
 		 * Metrics
 		 */
-		MavenMetrics metrics = new MavenMetrics(graph);
+		MavenMetricsConsole metrics = new MavenMetricsConsoleJython(graph);
 
 		/*
 		 * Python console
@@ -54,7 +53,7 @@ public class Main {
 		PySystemState.initialize();
 		PythonInterpreter pyi = new PythonInterpreter();
 		pyi.exec("from fr.lille1.maven_data_extraction.core import Project, Version");
-		pyi.exec("from fr.lille1.maven_data_extraction.core.metrics import MavenMetrics");
+		// pyi.exec("from fr.lille1.maven_data_extraction.core.metrics import MavenMetrics");
 		pyi.set("Metrics", metrics);
 
 		System.out.println("\n\nMaven Data Extraction");
