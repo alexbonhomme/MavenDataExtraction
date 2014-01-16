@@ -2,7 +2,7 @@ package fr.lille1.maven_data_extraction.core.extraction;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,56 +16,50 @@ import org.jdom2.input.SAXBuilder;
 import fr.lille1.maven_data_extraction.core.Pom;
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
+import fr.lille1.maven_data_extraction.core.exceptions.MavenDataExtractionException;
 
-public class DataExtractionImpl implements DataExtraction {
+public class MavenDataExtractionImpl implements MavenDataExtraction {
 
-	private final File folder;
+	private final File root;
 	private final HashMap<String, Project> projectMap;
 
 	private static final Logger log = Logger
-			.getLogger(DataExtractionImpl.class);
+			.getLogger(MavenDataExtractionImpl.class);
 
-	public DataExtractionImpl(File folder) {
-		this.folder = folder;
+	public MavenDataExtractionImpl(File root) {
+		this.root = root;
 		this.projectMap = new HashMap<String, Project>();
 	}
 
-	private List<File> findPom(File folder) {
-		List<File> listFile = new ArrayList<File>();
+	@Override
+	public Collection<Project> computeAllProjects() {
+		processPomFile(root);
 
-		File[] files = folder.listFiles();
-		if (files == null) {
-			return listFile;
-		}
-
-		for (File file : files) {
-			if (file.isDirectory()) {
-				listFile.addAll(findPom(file));
-			} else {
-				listFile.add(file);
-			}
-		}
-		return listFile;
+		return projectMap.values();
 	}
 
-	@Override
-	public HashMap<String, Project> getAllProject() {
-		List<File> listPom = findPom(folder);
-
-		for (File pom : listPom) {
-			addProject(pom);
+	private void processPomFile(File folder) {
+		File[] files = folder.listFiles();
+		if (files == null) {
+			return;
 		}
-		return projectMap;
+
+		for (File f : files) {
+			if (f.isDirectory()) {
+				processPomFile(f);
+			} else {
+				log.trace("Processing " + f);
+				addProject(f);
+			}
+		}
 	}
 
 	private void addProject(File pomFile) {
-
 		try {
 			Pom pom = pomExtract(pomFile);
 			Project project = pom.createProject();
 			Version version = pom.createVersion();
-			String keyProject = project.getGroupId().concat(".")
-					.concat(project.getArtifactId());
+			String keyProject = project.getFullName();
 
 			if (projectMap.containsKey(keyProject)) {
 				project = projectMap.get(keyProject);
@@ -74,8 +68,8 @@ public class DataExtractionImpl implements DataExtraction {
 				project.addVersion(version);
 				projectMap.put(keyProject, project);
 			}
-		} catch (NullPointerException e) {
-			System.err.println(e.getMessage());
+		} catch (MavenDataExtractionException e) {
+			log.debug(e.getLocalizedMessage());
 		}
 	}
 
@@ -95,16 +89,17 @@ public class DataExtractionImpl implements DataExtraction {
 			String versionNumber = rootNode.getChildText("version", ns);
 
 			// If groupId is null, we take that of its parent
-				if (groupId == null) {
-
+			if (groupId == null) {
 				if (parent == null) {
-					throw new NullPointerException("pom without GroupId : "
+					throw new MavenDataExtractionException(
+							"pom without GroupId : "
 							+ pomFile);
 				}
 
 				Element groupIdParent = parent.getChild("groupId", ns);
 				if (groupIdParent == null) {
-					throw new NullPointerException("pom without GroupId : "
+					throw new MavenDataExtractionException(
+							"pom without GroupId : "
 							+ pomFile);
 				}
 
@@ -125,14 +120,12 @@ public class DataExtractionImpl implements DataExtraction {
 			return pom;
 
 		} catch (JDOMException | IOException | NullPointerException e) {
-			System.err.println(e.getMessage());
+			throw new MavenDataExtractionException(e);
 		}
-
-		return null;
 	}
 
 	private void extractDependencies(Pom pom, Namespace ns,
-			Element dependenciesNode) throws NullPointerException {
+			Element dependenciesNode) {
 		List<Element> listDependency = dependenciesNode.getChildren(
 				"dependency", ns);
 		String groupIdDep;
@@ -145,20 +138,21 @@ public class DataExtractionImpl implements DataExtraction {
 			versionNumberDep = dependencyNode.getChildText("version", ns);
 
 			if ((groupIdDep == null) || (artifactIdDep == null)) {
-				throw new NullPointerException(
+				throw new MavenDataExtractionException(
 						"This pom have depedency without groupId or arifactId  : "
 								+ pom.getPomFile().toString());
 			}
 
 			if (versionNumberDep == null) {
 				versionNumberDep = "last";
-				log.debug("Dependency without version : "
+				log.trace("Dependency without version : "
 						+ pom.getPomFile().toString());
 			}
 
 			if (pom.getGroupId().equals(groupIdDep)
 					&& pom.getArtifactId().equals(artifactIdDep)) {
-				throw new NullPointerException("Pom is dependent of himself : "
+				throw new MavenDataExtractionException(
+						"Pom is dependent of himself : "
 						+ pom.getPomFile().toString());
 			}
 
