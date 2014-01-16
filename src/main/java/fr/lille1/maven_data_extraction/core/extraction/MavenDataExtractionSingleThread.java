@@ -18,15 +18,20 @@ import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
 import fr.lille1.maven_data_extraction.core.exceptions.MavenDataExtractionException;
 
-public class MavenDataExtractionImpl implements MavenDataExtraction {
+/**
+ * 
+ * @author Clément Dufour, Alexandre Bonhomme
+ * 
+ */
+public class MavenDataExtractionSingleThread implements MavenDataExtraction {
 
 	private final File root;
 	private final HashMap<String, Project> projectMap;
 
 	private static final Logger log = Logger
-			.getLogger(MavenDataExtractionImpl.class);
+			.getLogger(MavenDataExtractionSingleThread.class);
 
-	public MavenDataExtractionImpl(File root) {
+	public MavenDataExtractionSingleThread(File root) {
 		this.root = root;
 		this.projectMap = new HashMap<String, Project>();
 	}

@@ -12,7 +12,7 @@ import com.google.gag.annotation.disclaimer.AhaMoment;
 import com.google.gag.enumeration.Where;
 
 import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtraction;
-import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtractionImpl;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtractionSingleThread;
 import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphFactory;
@@ -36,7 +36,7 @@ public class MainConsole {
 		 */
 		MavenMultigraphFactory factory = new MavenMultigraphFactory(
 				MavenMultigraphLabeled.class);
-		MavenDataExtraction extractor = new MavenDataExtractionImpl(root);
+		MavenDataExtraction extractor = new MavenDataExtractionSingleThread(root);
 
 		log.info("Starting graph creation...");
 		MavenMultigraph<MavenLabeledEdge> graph = (MavenMultigraph<MavenLabeledEdge>) factory
