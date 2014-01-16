@@ -1,7 +1,10 @@
 package fr.lille1.maven_data_extraction.core;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gag.annotation.remark.Hack;
@@ -79,6 +82,14 @@ public class Project {
 	 */
 	public Version getVersion(String versionNumber) {
 		return versionsMap.get(versionNumber);
+	}
+
+	/**
+	 * Return a {@link Collection} of {@link Version versions} of the
+	 * {@link Project project}.
+	 */
+	public List<Version> getAllVersions() {
+		return new ArrayList<>(versionsMap.values());
 	}
 
 	/**
