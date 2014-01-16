@@ -43,7 +43,7 @@ public class MainConsole {
 		log.info("Starting graph creation...");
 		MavenMultigraph<MavenLabeledEdge> graph = (MavenMultigraph<MavenLabeledEdge>) factory
 				.build(extractor);
-
+		
 		long processingTimeMillis = System.currentTimeMillis() - startCounter;
 
 		/*
@@ -64,7 +64,23 @@ public class MainConsole {
 		System.out.println("Used Memory: " + memoryUsedMb + " MB");
 
 		System.out.println("\nJython " + PySystemState.version);
-		System.out.println("\nUse exit() or Ctrl-D (i.e. EOF) to exit");
+		System.out.println("Use exit() or Ctrl-D (i.e. EOF) to exit");
+		System.out.println("\nObjects available:");
+		System.out.println("\n\tMavenGraph");
+		System.out
+				.println("\n\tMetrics"
+						+ "\n\t\tprintAllStats()"
+						+ "\n\t\tprintStatsOf(String groupId, String artifactId)"
+						+ "\n\t\tdependenciesOf(Project p)"
+						+ "\n\t\tdependenciesOf(String groupId, String artifactId)"
+						+ "\n\t\tdependenciesOf(Project p, Version v)"
+						+ "\n\t\tdependenciesOf(String groupId, String artifactId, String versionNumber)"
+						+ "\n\t\tusagesOf(Project p)"
+						+ "\n\t\tusagesOf(String groupId, String artifactId)"
+						+ "\n\t\tusagesOf(Project p, Version v)"
+						+ "\n\t\tusagesOf(String groupId, String artifactId, String versionNumber)"
+						+ "\n\t\tconfidenceOf(Project p)"
+						+ "\n\t\tconfidenceOf(String groupId, String artifactId)");
 
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
