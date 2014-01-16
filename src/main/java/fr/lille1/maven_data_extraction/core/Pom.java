@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.lille1.maven_data_extraction.core.exceptions.MavenDataExtractionException;
+
 public class Pom {
 
 	private final File pomFile;
@@ -28,15 +30,15 @@ public class Pom {
 		testFieldContaint();
 	}
 
-	private void testFieldContaint() throws NullPointerException{
+	private void testFieldContaint() {
 		if ((groupId == null) || (artifactId == null)) {
-			throw new NullPointerException(
+			throw new MavenDataExtractionException(
 					"This pom haven't GroupId or ArtifiactId : "
 							+ pomFile.toString());
 		}
 		
 		if (versionNumber == null) {
-			log.debug("Pom without version" + pomFile);
+			log.trace("Pom without version" + pomFile);
 			versionNumber = "last";
 		}
 	}
