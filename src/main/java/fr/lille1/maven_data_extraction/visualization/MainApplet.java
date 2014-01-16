@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import fr.lille1.maven_data_extraction.core.extraction.DataExtraction;
-import fr.lille1.maven_data_extraction.core.extraction.DataExtractionImpl;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtraction;
+import fr.lille1.maven_data_extraction.core.extraction.MavenDataExtractionImpl;
 import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphFactory;
@@ -32,7 +32,7 @@ public class MainApplet {
 		 */
 		MavenMultigraphFactory factory = new MavenMultigraphFactory(
 				MavenMultigraphLabeled.class);
-		DataExtraction extractor = new DataExtractionImpl(root_big);
+		MavenDataExtraction extractor = new MavenDataExtractionImpl(root_big);
 
 		log.info("Starting graph creation...");
 		MavenMultigraph<MavenLabeledEdge> graph = (MavenMultigraph<MavenLabeledEdge>) factory
