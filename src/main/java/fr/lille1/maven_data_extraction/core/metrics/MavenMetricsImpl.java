@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.python.google.common.collect.Ordering;
 
 import fr.lille1.maven_data_extraction.core.Project;
@@ -12,6 +13,7 @@ import fr.lille1.maven_data_extraction.core.graph.MavenLabeledEdge;
 import fr.lille1.maven_data_extraction.core.graph.MavenMultigraph;
 
 public class MavenMetricsImpl implements MavenMetrics {
+	private static final Logger log = Logger.getLogger(MavenMetricsImpl.class);
 
 	private final MavenMultigraph<MavenLabeledEdge> graph;
 
@@ -124,6 +126,7 @@ public class MavenMetricsImpl implements MavenMetrics {
 		long nu_v2 = mu_v2;
 
 		double alpha = ((nu_v - nu_v2) / nu_v2);
+		log.debug("Confidence:\n\tMu: " + mu + " - Alpha: " + alpha);
 
 		return confidence * alpha;
 	}
