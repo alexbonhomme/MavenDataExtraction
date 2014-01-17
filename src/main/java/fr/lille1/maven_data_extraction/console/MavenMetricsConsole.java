@@ -40,4 +40,8 @@ public interface MavenMetricsConsole {
 
 	double confidenceOf(String groupId, String artifactId);
 
+	List<Integer> cumulativeHistUsages();
+
+	List<Integer> cumulativeHistDependencies();
+
 }

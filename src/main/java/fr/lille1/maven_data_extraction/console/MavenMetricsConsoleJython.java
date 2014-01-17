@@ -1,5 +1,6 @@
 package fr.lille1.maven_data_extraction.console;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
@@ -115,5 +116,61 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 	@Override
 	public double confidenceOf(String groupId, String artifactId) {
 		return confidenceOf(new Project(groupId, artifactId));
+	}
+
+	@Override
+	public List<Integer> cumulativeHistUsages() {
+		List<Integer> hist = new ArrayList<>();
+
+		SortedMap<Integer, List<Project>> map = new TreeMap<>();
+		for (Project project : graph.getAllVertices()) {
+			int usageNumber = usagesOf(project).size();
+			if (map.containsKey(usageNumber)) {
+				map.get(usageNumber).add(project);
+			} else {
+				List<Project> list = new ArrayList<>();
+				list.add(project);
+				map.put(usageNumber, list);
+			}
+		}
+
+		// Cumulative
+		for (Entry<Integer, List<Project>> entry : map.entrySet()) {
+			if (hist.size() == 0) {
+				hist.add(entry.getValue().size());
+			} else {
+				hist.add(hist.get(hist.size() - 1) + entry.getValue().size());
+			}
+		}
+
+		return hist;
+	}
+
+	@Override
+	public List<Integer> cumulativeHistDependencies() {
+		List<Integer> hist = new ArrayList<>();
+
+		SortedMap<Integer, List<Project>> map = new TreeMap<>();
+		for (Project project : graph.getAllVertices()) {
+			int dependenciesNumber = dependenciesOf(project).size();
+			if (map.containsKey(dependenciesNumber)) {
+				map.get(dependenciesNumber).add(project);
+			} else {
+				List<Project> list = new ArrayList<>();
+				list.add(project);
+				map.put(dependenciesNumber, list);
+			}
+		}
+
+		// Cumulative
+		for (Entry<Integer, List<Project>> entry : map.entrySet()) {
+			if (hist.size() == 0) {
+				hist.add(entry.getValue().size());
+			} else {
+				hist.add(hist.get(hist.size() - 1) + entry.getValue().size());
+			}
+		}
+
+		return hist;
 	}
 }

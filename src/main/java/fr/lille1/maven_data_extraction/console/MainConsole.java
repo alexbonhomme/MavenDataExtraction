@@ -74,16 +74,18 @@ public class MainConsole {
 						+ "\n\t\tprintAllStats()"
 						+ "\n\t\tprintTopUsages()"
 						+ "\n\t\tprintStatsOf(String groupId, String artifactId)"
-						+ "\n\t\tdependenciesOf(Project p)"
-						+ "\n\t\tdependenciesOf(String groupId, String artifactId)"
-						+ "\n\t\tdependenciesOf(Project p, Version v)"
-						+ "\n\t\tdependenciesOf(String groupId, String artifactId, String versionNumber)"
-						+ "\n\t\tusagesOf(Project p)"
-						+ "\n\t\tusagesOf(String groupId, String artifactId)"
-						+ "\n\t\tusagesOf(Project p, Version v)"
-						+ "\n\t\tusagesOf(String groupId, String artifactId, String versionNumber)"
-						+ "\n\t\tconfidenceOf(Project p)"
-						+ "\n\t\tconfidenceOf(String groupId, String artifactId)");
+						+ "\n\t\tList<Integer> cumulativeHistUsages()"
+						+ "\n\t\tList<Integer> cumulativeHistDependencies()"
+						+ "\n\t\tList<Project> dependenciesOf(Project p)"
+						+ "\n\t\tList<Project> dependenciesOf(String groupId, String artifactId)"
+						+ "\n\t\tList<Project> dependenciesOf(Project p, Version v)"
+						+ "\n\t\tList<Project> dependenciesOf(String groupId, String artifactId, String versionNumber)"
+						+ "\n\t\tList<Project> usagesOf(Project p)"
+						+ "\n\t\tList<Project> usagesOf(String groupId, String artifactId)"
+						+ "\n\t\tList<Project> usagesOf(Project p, Version v)"
+						+ "\n\t\tList<Project> usagesOf(String groupId, String artifactId, String versionNumber)"
+						+ "\n\t\tdouble confidenceOf(Project p)"
+						+ "\n\t\tdouble confidenceOf(String groupId, String artifactId)");
 
 		System.out.println("\nUse exit() or Ctrl-D (i.e. EOF) to exit");
 
