@@ -3,9 +3,6 @@ package fr.lille1.maven_data_extraction.core.metrics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.python.google.common.collect.Ordering;
@@ -168,29 +165,33 @@ public class MavenMetricsImpl implements MavenMetrics {
 
 	@Override
 	public List<Integer> cumulativeHistDependencies() {
-		List<Integer> hist = new ArrayList<>();
-
-		SortedMap<Integer, List<Project>> map = new TreeMap<>();
+		int maxDependencies = 0;
+		List<Integer> dependencies = new ArrayList<>();
 		for (Project project : graph.getAllVertices()) {
-			int dependenciesNumber = computeDependencies(project).size();
-			if (map.containsKey(dependenciesNumber)) {
-				map.get(dependenciesNumber).add(project);
-			} else {
-				List<Project> list = new ArrayList<>();
-				list.add(project);
-				map.put(dependenciesNumber, list);
+			int depsNumber = computeDependencies(project).size();
+			if (depsNumber > maxDependencies) {
+				maxDependencies = depsNumber;
 			}
+
+			dependencies.add(depsNumber);
+		}
+
+		// Histogram
+		int[] hist = new int[maxDependencies + 1];
+		for (Integer dependency : dependencies) {
+			hist[dependency]++;
 		}
 
 		// Cumulative
-		for (Entry<Integer, List<Project>> entry : map.entrySet()) {
-			if (hist.size() == 0) {
-				hist.add(entry.getValue().size());
-			} else {
-				hist.add(hist.get(hist.size() - 1) + entry.getValue().size());
+		List<Integer> histCumul = new ArrayList<>();
+		for (int i = 0; i < hist.length; i++) {
+			int value = 0;
+			for (int j = 0; j <= i; j++) {
+				value += hist[j];
 			}
+			histCumul.add(value);
 		}
 
-		return hist;
+		return histCumul;
 	}
 }
