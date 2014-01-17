@@ -1,6 +1,11 @@
 package fr.lille1.maven_data_extraction.console;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import fr.lille1.maven_data_extraction.core.Project;
 import fr.lille1.maven_data_extraction.core.Version;
@@ -37,6 +42,25 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 		out += "\n\tConfidence: " + confidenceOf(groupId, artifactId);
 
 		System.out.println(out);
+	}
+
+	@Override
+	public void printTopUsages() {
+		SortedMap<Integer, Project> usages = new TreeMap<>(
+				Collections.reverseOrder());
+		for (Project project : graph.getAllVertices()) {
+			usages.put(metrics.computeAllUsages(project).size(), project);
+		}
+
+		System.out.println("Top 10 usages:");
+		Set<Entry<Integer, Project>> usagesList = usages.entrySet();
+		for (Entry<Integer, Project> entry : usagesList) {
+			if (entry.getKey() == 0) {
+				continue;
+			}
+
+			System.out.println("\t" + entry.getKey() + " " + entry.getValue());
+		}
 	}
 
 	@Override

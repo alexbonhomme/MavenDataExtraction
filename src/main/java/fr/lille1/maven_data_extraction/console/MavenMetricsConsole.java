@@ -14,6 +14,8 @@ public interface MavenMetricsConsole {
 
 	void printAllStats();
 
+	void printTopUsages();
+
 	void printStatsOf(String groupId, String artifactId);
 
 	List<Project> dependenciesOf(Project p);

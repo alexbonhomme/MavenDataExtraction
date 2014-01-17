@@ -20,7 +20,7 @@ import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
 
 public class MainConsole {
 
-	private final static String version = "0.4.2";
+	private final static String version = "0.4.3";
 	private final static Logger log = Logger.getLogger(MainConsole.class);
 
 	@AhaMoment(Where.TOILET)
@@ -72,6 +72,7 @@ public class MainConsole {
 		System.out
 				.println("\n\tMetrics"
 						+ "\n\t\tprintAllStats()"
+						+ "\n\t\tprintTopUsages()"
 						+ "\n\t\tprintStatsOf(String groupId, String artifactId)"
 						+ "\n\t\tdependenciesOf(Project p)"
 						+ "\n\t\tdependenciesOf(String groupId, String artifactId)"
