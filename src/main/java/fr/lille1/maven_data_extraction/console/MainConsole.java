@@ -20,7 +20,7 @@ import fr.lille1.maven_data_extraction.core.graph.MavenMultigraphLabeled;
 
 public class MainConsole {
 
-	private final static String version = "0.4.4";
+	private final static String version = "0.4.5";
 	private final static Logger log = Logger.getLogger(MainConsole.class);
 
 	@AhaMoment(Where.TOILET)

@@ -54,13 +54,19 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 		}
 
 		System.out.println("Top 10 usages:");
+		int count = 1;
 		Set<Entry<Integer, Project>> usagesList = usages.entrySet();
 		for (Entry<Integer, Project> entry : usagesList) {
+			if (count > 10) {
+				return;
+			}
+
 			if (entry.getKey() == 0) {
-				continue;
+				return;
 			}
 
 			System.out.println("\t" + entry.getKey() + " " + entry.getValue());
+			++count;
 		}
 	}
 
