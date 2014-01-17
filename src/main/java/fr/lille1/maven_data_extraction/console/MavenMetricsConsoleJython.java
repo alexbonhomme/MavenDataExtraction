@@ -1,6 +1,5 @@
 package fr.lille1.maven_data_extraction.console;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
@@ -50,7 +49,7 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 		SortedMap<Integer, Project> usages = new TreeMap<>(
 				Collections.reverseOrder());
 		for (Project project : graph.getAllVertices()) {
-			usages.put(metrics.computeAllUsages(project).size(), project);
+			usages.put(metrics.computeUsages(project).size(), project);
 		}
 
 		System.out.println("Top 10 usages:");
@@ -94,7 +93,7 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 
 	@Override
 	public List<Project> usagesOf(Project p) {
-		return metrics.computeAllUsages(p);
+		return metrics.computeUsages(p);
 	}
 
 	@Override
@@ -126,57 +125,11 @@ public class MavenMetricsConsoleJython implements MavenMetricsConsole {
 
 	@Override
 	public List<Integer> cumulativeHistUsages() {
-		List<Integer> hist = new ArrayList<>();
-
-		SortedMap<Integer, List<Project>> map = new TreeMap<>();
-		for (Project project : graph.getAllVertices()) {
-			int usageNumber = usagesOf(project).size();
-			if (map.containsKey(usageNumber)) {
-				map.get(usageNumber).add(project);
-			} else {
-				List<Project> list = new ArrayList<>();
-				list.add(project);
-				map.put(usageNumber, list);
-			}
-		}
-
-		// Cumulative
-		for (Entry<Integer, List<Project>> entry : map.entrySet()) {
-			if (hist.size() == 0) {
-				hist.add(entry.getValue().size());
-			} else {
-				hist.add(hist.get(hist.size() - 1) + entry.getValue().size());
-			}
-		}
-
-		return hist;
+		return metrics.cumulativeHistUsages();
 	}
 
 	@Override
 	public List<Integer> cumulativeHistDependencies() {
-		List<Integer> hist = new ArrayList<>();
-
-		SortedMap<Integer, List<Project>> map = new TreeMap<>();
-		for (Project project : graph.getAllVertices()) {
-			int dependenciesNumber = dependenciesOf(project).size();
-			if (map.containsKey(dependenciesNumber)) {
-				map.get(dependenciesNumber).add(project);
-			} else {
-				List<Project> list = new ArrayList<>();
-				list.add(project);
-				map.put(dependenciesNumber, list);
-			}
-		}
-
-		// Cumulative
-		for (Entry<Integer, List<Project>> entry : map.entrySet()) {
-			if (hist.size() == 0) {
-				hist.add(entry.getValue().size());
-			} else {
-				hist.add(hist.get(hist.size() - 1) + entry.getValue().size());
-			}
-		}
-
-		return hist;
+		return metrics.cumulativeHistDependencies();
 	}
 }

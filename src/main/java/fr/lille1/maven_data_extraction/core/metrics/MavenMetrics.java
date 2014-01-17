@@ -29,7 +29,7 @@ public interface MavenMetrics {
 	 * List all {@link Project Project} which have {@link Project}
 	 * <code>p</code> in their dependencies
 	 */
-	List<Project> computeAllUsages(Project p);
+	List<Project> computeUsages(Project p);
 
 	/**
 	 * Compute a metric of confidence for a {@link Project} <code>p</code>
@@ -37,5 +37,9 @@ public interface MavenMetrics {
 	 * @return A value higher or equal to zero
 	 */
 	double confidence(Project p);
+
+	List<Integer> cumulativeHistUsages();
+
+	List<Integer> cumulativeHistDependencies();
 
 }

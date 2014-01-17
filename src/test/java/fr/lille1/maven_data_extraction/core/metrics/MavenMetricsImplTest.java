@@ -74,7 +74,7 @@ public class MavenMetricsImplTest {
 
 	@Test
 	public void testComputeAllUsages() {
-		List<Project> usages = metrics.computeAllUsages(p3);
+		List<Project> usages = metrics.computeUsages(p3);
 		assertEquals(2, usages.size());
 		assertTrue(usages.contains(p1));
 		assertTrue(usages.contains(p2));

@@ -3,6 +3,9 @@ package fr.lille1.maven_data_extraction.core.metrics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.python.google.common.collect.Ordering;
@@ -74,7 +77,7 @@ public class MavenMetricsImpl implements MavenMetrics {
 	}
 
 	@Override
-	public List<Project> computeAllUsages(Project p) {
+	public List<Project> computeUsages(Project p) {
 		List<Project> usages = new ArrayList<Project>();
 
 		for (MavenLabeledEdge edge : graph.edgesOf(p)) {
@@ -91,7 +94,7 @@ public class MavenMetricsImpl implements MavenMetrics {
 	public double confidence(Project p) {
 		double confidence = 0;
 
-		long mu = computeAllUsages(p).size();
+		long mu = computeUsages(p).size();
 		if (mu <= 0) {
 			return confidence;
 		}
@@ -129,5 +132,65 @@ public class MavenMetricsImpl implements MavenMetrics {
 		log.debug("Confidence:\n\tMu: " + mu + " - Alpha: " + alpha);
 
 		return confidence * alpha;
+	}
+
+	@Override
+	public List<Integer> cumulativeHistUsages() {
+		int maxUsages = 0;
+		List<Integer> usages = new ArrayList<>();
+		for (Project project : graph.getAllVertices()) {
+			int usagesNumber = computeUsages(project).size();
+			if (usagesNumber > maxUsages) {
+				maxUsages = usagesNumber;
+			}
+
+			usages.add(usagesNumber);
+		}
+
+		// Histogram
+		int[] hist = new int[maxUsages + 1];
+		for (Integer usage : usages) {
+			hist[usage]++;
+		}
+
+		// Cumulative
+		List<Integer> histCumul = new ArrayList<>();
+		for (int i = 0; i < hist.length; i++) {
+			int value = 0;
+			for (int j = 0; j <= i; j++) {
+				value += hist[j];
+			}
+			histCumul.add(value);
+		}
+
+		return histCumul;
+	}
+
+	@Override
+	public List<Integer> cumulativeHistDependencies() {
+		List<Integer> hist = new ArrayList<>();
+
+		SortedMap<Integer, List<Project>> map = new TreeMap<>();
+		for (Project project : graph.getAllVertices()) {
+			int dependenciesNumber = computeDependencies(project).size();
+			if (map.containsKey(dependenciesNumber)) {
+				map.get(dependenciesNumber).add(project);
+			} else {
+				List<Project> list = new ArrayList<>();
+				list.add(project);
+				map.put(dependenciesNumber, list);
+			}
+		}
+
+		// Cumulative
+		for (Entry<Integer, List<Project>> entry : map.entrySet()) {
+			if (hist.size() == 0) {
+				hist.add(entry.getValue().size());
+			} else {
+				hist.add(hist.get(hist.size() - 1) + entry.getValue().size());
+			}
+		}
+
+		return hist;
 	}
 }
